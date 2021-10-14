@@ -27,6 +27,12 @@ main :: func(): void {
   println "Fun Fact: ${Bolstruk.funFact}";
 }
 ```
+# 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
+
+![Github stats](https://github-readme-stats.vercel.app/api?username=0x1C64&show_icons=true&hide_border=true)
+<img src="https://github-readme-stats.vercel.app/api?username=0x1C64&show_icons=true&hide_border=true&count_private=true&theme=shades-of-purple&icon_color=fad000" alt="bolstruk's GitHub Stats">
+<img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=0x1C64&count_private=true&theme=radical" alt="0x1C64" />
+<img align="center" width=500 src="https://github-readme-stats.vercel.app/api/top-langs/?username=0x1C64&count_private=true&theme=radical" alt="0x1C64" />
 
 ## 𝗪𝗵𝗮𝘁 𝗜 𝗨𝘀𝗲
 
@@ -60,12 +66,7 @@ main :: func(): void {
 - 💻 [Basic Python IP-TOOL](https://github.com/0x1C64/IP-TOOL)
 
 
-# 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
 
-![Github stats](https://github-readme-stats.vercel.app/api?username=0x1C64&show_icons=true&hide_border=true)
-<img src="https://github-readme-stats.vercel.app/api?username=0x1C64&show_icons=true&hide_border=true&count_private=true&theme=shades-of-purple&icon_color=fad000" alt="bolstruk's GitHub Stats">
-<img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=0x1C64&count_private=true&theme=radical" alt="0x1C64" />
-<img align="center" width=500 src="https://github-readme-stats.vercel.app/api/top-langs/?username=0x1C64&count_private=true&theme=radical" alt="0x1C64" />
 
 # 𝗪𝗵𝗮𝘁 𝘄𝗶𝗹𝗹 𝗶 𝗱𝗼 𝘁𝗵𝗶𝘀 𝘄𝗲𝗲𝗸
 - Finish: https://github.com/0x1C64/IP-TOOL
