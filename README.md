@@ -5,7 +5,7 @@
 - **I Dont Claim To Be The Best, But Im Pretty Smart XD*
 
 ![Visitor count](https://visitor-badge.laobi.icu/badge?page_id=0x1C64) <img src="https://media.giphy.com/media/3oxOCAPiSOfk1qjTQA/giphy.gif" width="230">
-<img align='right' src="https://media.giphy.com/media/l0HengCwDol8FO4nu/giphy.gif" width="60">
+<img align='right' src="https://media.giphy.com/media/l0HengCwDol8FO4nu/giphy.gif" width="300">
 
 <a href="https://www.instagram.com/0X1c64/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-0X1c64-black?style=flat-square&logo=instagram"></a>
 <img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
