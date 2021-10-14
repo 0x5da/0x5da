@@ -74,4 +74,4 @@ https://github.com/0x1C64/IP-TOOL
 # Other
 Discord:
 
-![Discord](https://img.shields.io/discord/731577337686130858?label=Join%20The%20DIscord%21&logo=Sadie%20Lang&style=for-the-badge)
+![Discord](https://discord.gg/n38MPpgZ3v)
