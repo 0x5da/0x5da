@@ -14,17 +14,17 @@ aboutMe :: struct {
 }
 
 main :: func(): void {
-  Bolstruk :: aboutMe = {
+  0x1C64 :: aboutMe = {
     pronouns: ["xem", "eir", "cos", "nirs"],
     languages: ["C", "Python", "V-Lang"],
-    hobbies: ["Coding", "Gaming", "Talking". "Discord"],
+    hobbies: ["Coding", "Gaming", "Learning". "Discord"],
     funFact: "Your Here Cause Im Bullying you!?"
   };
 
-  println "Pronouns: ${Bolstruk.pronouns}";
-  println "Languages I Know: ${Bolstruk.languages}";
-  println "My Hobbies: ${Bolstruk.hobbies}";
-  println "Fun Fact: ${Bolstruk.funFact}";
+  println "Pronouns: ${0x1C64.pronouns}";
+  println "Languages I Know: ${0x1C64.languages}";
+  println "My Hobbies: ${0x1C64.hobbies}";
+  println "Fun Fact: ${0x1C64.funFact}";
 }
 ```
 # 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
