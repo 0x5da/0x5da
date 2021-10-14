@@ -58,6 +58,12 @@ main :: func(): void {
 <img align="center" width=500 src="https://github-readme-stats.vercel.app/api/top-langs/?username=0x1C64&count_private=true&theme=radical" alt="0x1C64" />
 
 ## 𝗪𝗵𝗮𝘁 𝗜 𝗨𝘀𝗲
+  
+  
+ <code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/python/python.png"></code>
+<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/cpp/cpp.png">
+<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/git/git.png"></code>
+<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/terminal/terminal.png"></code>
 
 <table>
   <tbody>
