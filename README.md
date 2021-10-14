@@ -16,8 +16,8 @@ aboutMe :: struct {
 main :: func(): void {
   Bolstruk :: aboutMe = {
     pronouns: ["He", "Him"],
-    languages: ["C", "C#", "Java", "Python"],
-    hobbies: ["Coding", "Gaming", "Talking"],
+    languages: ["C", "Python", "V-Lang"],
+    hobbies: ["Coding", "Gaming", "Talking". "Discord"],
     funFact: "Your Here Cause Im Bullying you!?"
   };
 
