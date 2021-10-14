@@ -2,15 +2,12 @@
 
 - **𝗜 𝗮𝗺 𝗮 C, Python, V-LANG 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿**
 - **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
-- **I Dont Claim To Be The Best, But Im Pretty Smart XD**
-
-
-<img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
+- **I Dont Claim To Be The Best, But Im Pretty Smart XD*
 
 ![Visitor count](https://visitor-badge.laobi.icu/badge?page_id=0x1C64)   <img src="https://media.giphy.com/media/dxn6fRlTIShoeBr69N/giphy.gif" width="30">
 
 <a href="https://www.instagram.com/0X1c64/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-0X1c64-black?style=flat-square&logo=instagram"></a>
-
+<img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
 ```
 module main
 
