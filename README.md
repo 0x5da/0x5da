@@ -2,6 +2,7 @@
 
 - **𝗜 𝗮𝗺 𝗮 C, Python, V-LANG 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿**
 - **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
+- **I Dont Claim To Be The Best, But Im Pretty Smart XD**
 
 ```
 module main
