@@ -62,7 +62,7 @@ main :: func(): void {
 
 # 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
 
-![Github stats](https://github-readme-stats.vercel.app/api?username=munific&show_icons=true&hide_border=true)
+![Github stats](https://github-readme-stats.vercel.app/api?username=0x1C64&show_icons=true&hide_border=true)
 
 # 𝗪𝗵𝗮𝘁 𝘄𝗶𝗹𝗹 𝗶 𝗱𝗼 𝘁𝗵𝗶𝘀 𝘄𝗲𝗲𝗸
 - Finish: https://github.com/0x1C64/IP-TOOL
