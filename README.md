@@ -4,6 +4,8 @@
 - **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
 - **I Dont Claim To Be The Best, But Im Pretty Smart XD**
 
+![Visitor count](https://visitor-badge.laobi.icu/badge?page_id=0x1C64)   <img src="https://media.giphy.com/media/dxn6fRlTIShoeBr69N/giphy.gif" width="30">
+
 ```
 module main
 
@@ -28,6 +30,7 @@ main :: func(): void {
   println "Fun Fact: ${0x1C64.funFact}";
 }
 ```
+
 ***About Me!***
 - i like networking and binaryexp and programming and i love learning all of it
 - => Python
