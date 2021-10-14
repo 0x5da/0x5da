@@ -6,6 +6,8 @@
 
 ![Visitor count](https://visitor-badge.laobi.icu/badge?page_id=0x1C64)   <img src="https://media.giphy.com/media/dxn6fRlTIShoeBr69N/giphy.gif" width="30">
 
+<a href="https://www.instagram.com/0X1c64/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-0X1c64-black?style=flat-square&logo=instagram"></a>
+
 ```
 module main
 
