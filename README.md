@@ -28,6 +28,28 @@ main :: func(): void {
   println "Fun Fact: ${0x1C64.funFact}";
 }
 ```
+***About Me!***
+- i like networking and binaryexp and programming and i love learning all of it
+- => Python
+- => C
+- => V-Lang
+- i like software development
+- exploit development in C
+- i like but dont support malware development
+
+<h3 title="hehehe"> My INT-rests < get the joke? haha -_-</h3>
+ 
+ - malware
+ - exploits
+ - OSINT
+ - Social Engeneering
+ - Side-CTF/Full-CTF
+ - Vuln Scanning
+ - Vuln Research
+ - Web Exploiting
+
+
+
 # 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
 
 ![Github stats](https://github-readme-stats.vercel.app/api?username=0x1C64&show_icons=true&hide_border=true)
