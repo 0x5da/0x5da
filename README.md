@@ -65,8 +65,9 @@ main :: func(): void {
 ![Github stats](https://github-readme-stats.vercel.app/api?username=munific&show_icons=true&hide_border=true)
 
 # 𝗪𝗵𝗮𝘁 𝘄𝗶𝗹𝗹 𝗶 𝗱𝗼 𝘁𝗵𝗶𝘀 𝘄𝗲𝗲𝗸
-Finish: 
-https://github.com/0x1C64/IP-TOOL
+- Finish: https://github.com/0x1C64/IP-TOOL
+- Completed: https://github.com/0x1C64/Another-Reverse-Shell
+- Completed: https://github.com/0x1C64/CNC-Shell
 
 ## Show ❤️ By Starring My Repos!
 
