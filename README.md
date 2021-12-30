@@ -1,6 +1,6 @@
-# Hello, Im Bolstruk!
+# Hello, Im +=!
 
-- **𝗜 𝗮𝗺 𝗮 C, Python, V-LANG 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿**
+- **𝗜 𝗮𝗺 𝗮 C 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿**
 - **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
 - **I Dont Claim To Be The Best, But Im Pretty Smart XD**
 
@@ -22,7 +22,7 @@ aboutMe :: struct {
 main :: func(): void {
   0x1C64 :: aboutMe = {
     pronouns: ["xem", "eir", "cos", "nirs"],
-    languages: ["C", "Python", "V-Lang"],
+    languages: ["C"],
     hobbies: ["Coding", "Gaming", "Learning". "Discord"],
     funFact: "Your Here Cause Im Bullying you!?"
   };
@@ -36,9 +36,7 @@ main :: func(): void {
 
 ***About Me!***
 - i like networking and binaryexp and programming and i love learning all of it
-- => Python
 - => C
-- => V-Lang
 - i like software development
 - exploit development in C
 - i like but dont support malware development
