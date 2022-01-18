@@ -7,7 +7,7 @@
 ![Visitor count](https://visitor-badge.laobi.icu/badge?page_id=0x1C64) <img src="https://media.giphy.com/media/3oxOCAPiSOfk1qjTQA/giphy.gif" width="230">
 <img align='right' src="https://media.giphy.com/media/l0HengCwDol8FO4nu/giphy.gif" width="160">
 
-<a href="https://www.instagram.com/0X1c64/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-0X1c64-black?style=flat-square&logo=instagram"></a>
+<a href="https://www.instagram.com/SystemBugged/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-SystemBugged-black?style=flat-square&logo=instagram"></a>
 <img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
 ```
 module main
@@ -102,9 +102,9 @@ main :: func(): void {
 
 
 # 𝗪𝗵𝗮𝘁 𝘄𝗶𝗹𝗹 𝗶 𝗱𝗼 𝘁𝗵𝗶𝘀 𝘄𝗲𝗲𝗸
-- Finish: https://github.com/0x1C64/IP-TOOL
-- Completed: https://github.com/0x1C64/Another-Reverse-Shell
-- Completed: https://github.com/0x1C64/CNC-Shell
+- Finish: https://github.com/0xSV/IP-TOOL
+- Completed: https://github.com/0xSV/Another-Reverse-Shell
+- Completed: https://github.com/0xSV/CNC-Shell
 
 ## Show ❤️ By Starring My Repos!
 
