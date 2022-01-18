@@ -27,10 +27,10 @@ main :: func(): void {
     funFact: "Your Here Cause Im Bullying you!?"
   };
 
-  println "Pronouns: ${0x1C64.pronouns}";
-  println "Languages I Know: ${0x1C64.languages}";
-  println "My Hobbies: ${0x1C64.hobbies}";
-  println "Fun Fact: ${0x1C64.funFact}";
+  println "Pronouns: ${SyntaxVoid.pronouns}";
+  println "Languages I Know: ${SyntaxVoid.languages}";
+  println "My Hobbies: ${SyntaxVoid.hobbies}";
+  println "Fun Fact: ${SyntaxVoid.funFact}";
 }
 ```
 
