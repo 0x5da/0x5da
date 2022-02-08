@@ -1,4 +1,4 @@
-# Hello, Im Cicada The Retro Lord!
+# Hello, Im Shy The Synthian!
 
 - **𝗜 𝗮𝗺 𝗮 C/++/C# 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿**
 - **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
