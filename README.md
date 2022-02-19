@@ -4,8 +4,11 @@
 - **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
 - **I Dont Claim To Be The Best, But Im Pretty Smart XD**
 
-![Visitor count](https://visitor-badge.laobi.icu/badge?page_id=0x1C64) <img src="https://media.giphy.com/media/3oxOCAPiSOfk1qjTQA/giphy.gif" width="230">
-<img align='right' src="https://media.giphy.com/media/l0HengCwDol8FO4nu/giphy.gif" width="160">
+<p align="center"> 
+  Visitor count<br>
+  <img src="https://profile-counter.glitch.me/ektaarora16/count.svg" />
+</p>
+ <div align="center">
 
 <a href="https://www.instagram.com/SystemBugged/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-SystemBugged-black?style=flat-square&logo=instagram"></a>
 <img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
