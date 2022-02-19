@@ -56,10 +56,10 @@ main :: func(): void {
 
 # 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
 
-![Github stats](https://github-readme-stats.vercel.app/api?username=0xSV&show_icons=true&hide_border=true)
-<img src="https://github-readme-stats.vercel.app/api?username=0xSV&show_icons=true&hide_border=true&count_private=true&theme=shades-of-purple&icon_color=fad000" alt="bolstruk's GitHub Stats">
-<img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=0xSV&count_private=true&theme=radical" alt="0xSV" />
-<img align="center" width=500 src="https://github-readme-stats.vercel.app/api/top-langs/?username=0xSV&count_private=true&theme=radical" alt="0xSV" />
+![Github stats](https://github-readme-stats.vercel.app/api?username=80sLordShy&show_icons=true&hide_border=true)
+<img src="https://github-readme-stats.vercel.app/api?username=80sLordShy&show_icons=true&hide_border=true&count_private=true&theme=shades-of-purple&icon_color=fad000" alt="bolstruk's GitHub Stats">
+<img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=80sLordShy&count_private=true&theme=radical" alt="80sLordShy" />
+<img align="center" width=500 src="https://github-readme-stats.vercel.app/api/top-langs/?username=80sLordShy&count_private=true&theme=radical" alt="80sLordShy" />
 
 ## 𝗪𝗵𝗮𝘁 𝗜 𝗨𝘀𝗲
   
@@ -102,9 +102,9 @@ main :: func(): void {
 
 
 # 𝗪𝗵𝗮𝘁 𝘄𝗶𝗹𝗹 𝗶 𝗱𝗼 𝘁𝗵𝗶𝘀 𝘄𝗲𝗲𝗸
-- Finish: https://github.com/0xSV/IP-TOOL
-- Completed: https://github.com/0xSV/Another-Reverse-Shell
-- Completed: https://github.com/0xSV/CNC-Shell
+- Finish: https://github.com/80sLordShy/IP-TOOL
+- Completed: https://github.com/80sLordShy/Another-Reverse-Shell
+- Completed: https://github.com/80sLordShy/CNC-Shell
 
 ## Show ❤️ By Starring My Repos!
 
