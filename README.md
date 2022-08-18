@@ -10,7 +10,7 @@
 </p>
  <div align="center">
 
-<a href="https://www.instagram.com/SystemBugged/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-SystemBugged-black?style=flat-square&logo=instagram"></a>
+<a href="https://www.instagram.com/codewritings/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-codewritings-black?style=flat-square&logo=instagram"></a>
 <img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
 ```
 module main
