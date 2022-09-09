@@ -1,118 +1,28 @@
-# Hello, Im +=#3285 The god!
-
-- **𝗜 𝗮𝗺 𝗮 C/++/C# 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿**
-- **𝗜 ❤️ 𝗟𝗼𝘄 𝗟𝗲𝘃𝗲𝗹 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 & Coding Small Projects**
-- **I Dont Claim To Be The Best, But Im Pretty Smart XD**
-
-<p align="center"> 
-  Visitor count<br>
-  <img src="https://profile-counter.glitch.me/ektaarora16/count.svg" />
-</p>
- <div align="center">
-
-<a href="https://www.instagram.com/codewritings/"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-codewritings-black?style=flat-square&logo=instagram"></a>
-<img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
-```
-module main
-
-aboutMe :: struct {
-  pronouns :: string[];
-  languages :: string[];
-  hobbies :: string[];
-  funFact :: string;
-}
-
-main :: func(): void {
-  0x1C64 :: aboutMe = {
-    pronouns: ["xem", "eir", "cos", "nirs"],
-    languages: ["C"],
-    hobbies: ["Coding", "Gaming", "Learning". "Discord"],
-    funFact: "Your Here Cause Im Bullying you!?"
-  };
-
-  println "Pronouns: ${SyntaxVoid.pronouns}";
-  println "Languages I Know: ${SyntaxVoid.languages}";
-  println "My Hobbies: ${SyntaxVoid.hobbies}";
-  println "Fun Fact: ${SyntaxVoid.funFact}";
-}
-```
-
-***About Me!***
-- i like networking and binaryexp and programming and i love learning all of it
-- => C
-- i like software development
-- exploit development in C
-- i like but dont support malware development
-
-<h3 title="hehehe"> My INT-rests < get the joke? haha -_-</h3>
+<p align="center"> hello today I will be your host to the realization of your exploits! </p align="center">
+<p align="center">
  
- - malware
- - exploits
- - OSINT
- - Social Engeneering
- - Side-CTF/Full-CTF
- - Vuln Scanning
- - Vuln Research
- - Web Exploiting
+</p align="center">
+<!--- Picture --->
+<p align="center">
+<img src="https://github.com/AeX03/AeX03/blob/main/picture/rep.gif" />
+  </p align="center">
+<!--- Stat Github --->
+<img align="left" width="430" height="auto" alt="AeX03's github stats" src="https://github-readme-stats.vercel.app/api?username=AeX03&hide=_border=true&title_color=0ff54c&icon_color=0ff54c&text_color=c9d1d9&bg_color=0d1117&show_icons=true;count_private=true&amp;include_all_commits=true">
+<img align="right" width="359" height="auto" alt="AeX03's github stats" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Aex03&hide=_border=true&title_color=0ff54c&icon_color=0ff54c&text_color=c9d1d9&bg_color=0d1117&layout=compact&amp;show_icons=true&amp;">
+</h2>
+<!--- Snake Graph --->
+<p align="center">
+<img src="https://github.com/aex03/aex03/raw/output/github-contribution-grid-snake.svg" alt="snake" style="max-width: 100%;">
+</p>
+<br>
+<br>
+<p align="center"><img src="https://metrics.lecoq.io/aex03?template=classic&achievements=1&achievements.threshold=C&achievements.secrets=true&achievements.display=compact&achievements.limit=0&config.timezone=Asia%2FDhaka"></p align="center">
+<br>
+<br>
+<br>
 
+## :exclamation: Disclaimer
+                                                   TO BE USED FOR Education Purpose
 
-
-# 𝗠𝘆 𝗦𝘁𝗮𝘁𝘀
-
-![Github stats](https://github-readme-stats.vercel.app/api?username=80sLordShy&show_icons=true&hide_border=true)
-<img src="https://github-readme-stats.vercel.app/api?username=80sLordShy&show_icons=true&hide_border=true&count_private=true&theme=shades-of-purple&icon_color=fad000" alt="bolstruk's GitHub Stats">
-<img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=80sLordShy&count_private=true&theme=radical" alt="80sLordShy" />
-<img align="center" width=500 src="https://github-readme-stats.vercel.app/api/top-langs/?username=80sLordShy&count_private=true&theme=radical" alt="80sLordShy" />
-
-## 𝗪𝗵𝗮𝘁 𝗜 𝗨𝘀𝗲
-  
-  
- <code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/python/python.png"></code>
-<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/cpp/cpp.png">
-<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/git/git.png"></code>
-<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/terminal/terminal.png"></code>
-
-<table>
-  <tbody>
-    <tr valign="top">
-      <td width="25%" align="center">
-        <span>𝗖</span><br><br><br>
-        <img height="64px" src="https://cdn.svgporn.com/logos/c.svg">
-      </td>
-      <td width="25%" align="center">
-        <span>𝗣𝘆𝘁𝗵𝗼𝗻</span><br><br><br>
-        <img height="64px" src="https://cdn.svgporn.com/logos/python.svg">
-      </td>
-    </tr>
-    <tr valign="top">
-      <td width="25%" align="center">
-        <span>𝗚𝗶𝘁</span><br><br><br>
-        <img height="64px" src="https://cdn.svgporn.com/logos/git-icon.svg">
-      </td>
-      <td width="25%" align="center">
-        <span>𝗩𝗶𝘀𝘂𝗮𝗹 𝗦𝘁𝘂𝗱𝗶𝗼 𝗖𝗼𝗱𝗲</span><br><br><br>
-        <img height="64px" src="https://cdn.svgporn.com/logos/visual-studio-code.svg">
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-# 𝗖𝘂𝗿𝗿𝗲𝗻𝘁𝗹𝘆 𝘄𝗼𝗿𝗸𝗶𝗻𝗴 𝗼𝗻
-
-- 💻 [Basic Python IP-TOOL](https://github.com/0x1C64/IP-TOOL)
-
-
-
-
-# 𝗪𝗵𝗮𝘁 𝘄𝗶𝗹𝗹 𝗶 𝗱𝗼 𝘁𝗵𝗶𝘀 𝘄𝗲𝗲𝗸
-- Finish: https://github.com/80sLordShy/IP-TOOL
-- Completed: https://github.com/80sLordShy/Another-Reverse-Shell
-- Completed: https://github.com/80sLordShy/CNC-Shell
-
-## Show ❤️ By Starring My Repos!
-
-
-# Other
-Discord:
-
-![Discord](https://discord.gg/n38MPpgZ3v)
+all tools may only be used for lawful purposes. Users take full responsibility for any action taken using the tool(s). The author declines all responsibility for damage caused by these tools offered on his page. If these terms do not suit you, do not use these tools.
+By using the tools you declare that you have taken cognizance of the terms of the MIT contract and my additions thereto.
