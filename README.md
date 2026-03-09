@@ -88,15 +88,92 @@ the stuff i reach for, not just everything i've ever touched:
 
 ---
 
-### projects & research
+### exploit research
 
-most of my work lives in private repos for obvious reasons, but here's what i'm building:
+these are educational exploit PoCs i've written to demonstrate specific vulnerability classes. each one is a self-contained C/C++ project with the vulnerable code, the exploit, and a writeup explaining exactly what's happening at the memory level.
 
-- **custom exploitation framework** — modular toolkit for payload generation and delivery. python/c core with go for implant comms.
-- **osint automation suite** — automated recon pipeline that feeds into imperium's API. handles subdomain enum, credential discovery, social profiling.
-- **network toolkit** — custom packet crafting and protocol analysis tools. mostly for situations where scapy isn't enough.
-- **malware analysis lab** — automated sandbox with behavioral analysis and yara rule generation. spins up isolated VMs, runs samples, produces reports.
-- **web vuln scanner** — started as a weekend project, now handles most of owasp top 10 detection with low false positives.
+<a href="https://github.com/0x5da/New-Shellcode-Injection-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=New-Shellcode-Injection-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Heap-Buffer-Overflow-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Heap-Buffer-Overflow-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/C-VTable-Hijack-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=C-VTable-Hijack-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Double-Free-Heap-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Double-Free-Heap-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Format-String-Arbitrary-Write---exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Format-String-Arbitrary-Write---exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Format-String-Arbitrary-Read-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Format-String-Arbitrary-Read-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Format-String-Chain-Multi-Step-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Format-String-Chain-Multi-Step-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Command-Injection-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Command-Injection-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/AMWP-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=AMWP-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+
+the progression is intentional — stack overflow → heap overflow → vtable hijack → format string read → write → chained multi-step → double free → command injection → arbitrary memory write. each one builds on concepts from the previous.
+
+---
+
+### security tools
+
+real tools i've built and actually use. a mix of recon, analysis, scanning, and forensics.
+
+<a href="https://github.com/0x5da/0x5da-VPS-Malware-C2-Scanner-Exploit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=0x5da-VPS-Malware-C2-Scanner-Exploit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Imperium-OSINT-Framework-tool">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Imperium-OSINT-Framework-tool&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/DNS-Discovery-Tool">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=DNS-Discovery-Tool&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Port-Auditor-tool">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Port-Auditor-tool&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Content-Discovery-Scanner">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Content-Discovery-Scanner&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/RESTful-API-security-assessment-framework">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=RESTful-API-security-assessment-framework&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/TLS-SSL-security-assessment-tool-for-certificate-validation">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=TLS-SSL-security-assessment-tool-for-certificate-validation&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/cryptanalysis-toolkit">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=cryptanalysis-toolkit&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+
+---
+
+### forensics & analysis
+
+tools for the blue team side of things — incident response, malware analysis, network forensics, log correlation.
+
+<a href="https://github.com/0x5da/Malware-behavior-analyzer">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Malware-behavior-analyzer&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Network-Artifact-Recovery-tool">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Network-Artifact-Recovery-tool&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Network-Flow-Inspector-tool">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Network-Flow-Inspector-tool&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Log-Analysis-Engine">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Log-Analysis-Engine&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
+<a href="https://github.com/0x5da/Metadata-extraction-tool">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=0x5da&repo=Metadata-extraction-tool&hide_border=true&bg_color=0d1117&title_color=00FF54&icon_color=00FF54&text_color=9f9f9f&cache_seconds=1800" />
+</a>
 
 ---
 
