@@ -1,0 +1,2080 @@
+From 73342eeccd1cb4bcfc2a79ca486f39f6affad16c Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Mon, 9 Mar 2026 21:26:14 +0000
+Subject: [PATCH] Rewrite scanner with malware classification, interactive
+ menu, colored output
+
+- 16 malware types: cryptominer, botnet, C2 server, RAT, backdoor,
+  rootkit, DDoS bot, IRC bot, webshell, dropper, worm, stealer,
+  ransomware, proxy, suspicious, unknown
+- Signature-based classification using cmdline + exe path matching
+- Severity levels: CRITICAL, HIGH, MEDIUM, LOW per malware type
+- Color-coded ANSI output with ASCII art banner
+- 4-phase flow: scan -> threat analysis summary -> detailed findings -> action menu
+- Interactive remediation menu with 7 options:
+  [1] Review each finding individually (per-finding action submenu)
+  [2-5] Graduated auto-remediation (kill -> +block -> +quarantine -> +cron)
+  [6] Full aggression (all above + exploit C2 + poison sockets)
+  [0] Exit without action
+- Per-finding actions: kill PID, kill group, poison socket, block IP,
+  exploit C2, quarantine file, strip cron
+- CLI flags still work: -r -E -P -B -G -q for non-interactive use
+- Findings stored in array for summary stats before action phase
+---
+ exploit                  |  Bin 0 -> 16696 bytes
+ vps_malware_c2_scanner   |  Bin 0 -> 52504 bytes
+ vps_malware_c2_scanner.c | 1315 ++++++++++++++++++++++++++------------
+ vulnerable_target        |  Bin 0 -> 16496 bytes
+ 4 files changed, 897 insertions(+), 418 deletions(-)
+ create mode 100755 exploit
+ create mode 100755 vps_malware_c2_scanner
+ create mode 100755 vulnerable_target
+
+diff --git a/exploit b/exploit
+new file mode 100755
+index 0000000000000000000000000000000000000000..52de6175976581febbed86de310ea97b8b70445c
+GIT binary patch
+literal 16696
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/vps_malware_c2_scanner b/vps_malware_c2_scanner
+new file mode 100755
+index 0000000000000000000000000000000000000000..1a3d2fd17e50b85c8d5809bbfbabaf69a4deae05
+GIT binary patch
+literal 52504
+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
+KxD0Wm^1lGVO!uPz
+
+literal 0
+HcmV?d00001
+
+diff --git a/vps_malware_c2_scanner.c b/vps_malware_c2_scanner.c
+index 692e241..ecdda16 100644
+--- a/vps_malware_c2_scanner.c
++++ b/vps_malware_c2_scanner.c
+@@ -1,9 +1,8 @@
+ /*
+  * vps_malware_c2_scanner.c
+- * Scans a Linux VPS/server for malware, botnets, C2; in remediate mode
+- * kills malicious processes, drops C2 connections, strips cron persistence,
+- * quarantines dropped executables, poisons C2 sockets, and blocks C2 IPs.
+- * Dumps every bit of detail about each finding for full intelligence.
++ * Scans a Linux VPS/server for malware, botnets, C2/CNC; identifies malware
++ * type, displays full intel on every finding, then presents an interactive
++ * menu to choose remediation actions per-finding.
+  *
+  * Created by 0x5da (Toasty / OsintToast / WoahToast)
+  * Exploit Developer & Security Engineer • OSINT • Malware Analysis • Pentesting Tools
+@@ -25,32 +24,152 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdint.h>
++#include <ctype.h>
+ 
+ #ifndef MSG_NOSIGNAL
+ #define MSG_NOSIGNAL 0
+ #endif
+ 
+-#define MAX_LINE   4096
+-#define MAX_PATH   512
+-#define QUARANTINE "/root/.0x5da_quarantine"
+-#define POISON_SIZE 4096
++#define MAX_LINE       4096
++#define MAX_PATH_LEN   512
++#define QUARANTINE     "/root/.0x5da_quarantine"
++#define POISON_SIZE    4096
++#define MAX_FINDINGS   512
++#define C2_EXPLOIT_CONNS       8
++#define C2_EXPLOIT_PAYLOAD_SIZE 65536
+ 
+-static int do_remediate;
+-static int do_poison;
+-static int do_block_ip;
+-static int do_kill_pg;
+-static int do_exploit_c2;  /* active outbound attack on C2 server */
+-static pid_t self_pid;
++/* ──────────────────────── ANSI colors ──────────────────────── */
++#define C_RST   "\033[0m"
++#define C_RED   "\033[1;31m"
++#define C_GRN   "\033[1;32m"
++#define C_YEL   "\033[1;33m"
++#define C_BLU   "\033[1;34m"
++#define C_MAG   "\033[1;35m"
++#define C_CYN   "\033[1;36m"
++#define C_WHT   "\033[1;37m"
++#define C_DIM   "\033[2m"
++#define C_DRED  "\033[0;31m"
++#define C_DGRN  "\033[0;32m"
++#define C_DYEL  "\033[0;33m"
+ 
+-#define MAX_C2_TARGETS 256
+-#define C2_EXPLOIT_CONNS 8
+-#define C2_EXPLOIT_PAYLOAD_SIZE 65536
++/* ──────────────────────── malware types ──────────────────────── */
++typedef enum {
++    MAL_UNKNOWN = 0,
++    MAL_CRYPTOMINER,
++    MAL_BOTNET_CLIENT,
++    MAL_C2_SERVER,
++    MAL_RAT,
++    MAL_BACKDOOR,
++    MAL_ROOTKIT,
++    MAL_DDOS_BOT,
++    MAL_IRC_BOT,
++    MAL_WEBSHELL,
++    MAL_DROPPER,
++    MAL_WORM,
++    MAL_STEALER,
++    MAL_RANSOMWARE,
++    MAL_PROXY,
++    MAL_SUSPICIOUS
++} malware_type_t;
++
++static const char *malware_type_name(malware_type_t t) {
++    switch (t) {
++        case MAL_CRYPTOMINER:   return "Cryptominer";
++        case MAL_BOTNET_CLIENT: return "Botnet Client";
++        case MAL_C2_SERVER:     return "C2/CNC Server";
++        case MAL_RAT:           return "Remote Access Trojan";
++        case MAL_BACKDOOR:      return "Backdoor";
++        case MAL_ROOTKIT:       return "Rootkit";
++        case MAL_DDOS_BOT:      return "DDoS Bot";
++        case MAL_IRC_BOT:       return "IRC Bot";
++        case MAL_WEBSHELL:      return "Web Shell";
++        case MAL_DROPPER:       return "Dropper/Loader";
++        case MAL_WORM:          return "Worm";
++        case MAL_STEALER:       return "Info Stealer";
++        case MAL_RANSOMWARE:    return "Ransomware";
++        case MAL_PROXY:         return "Malicious Proxy";
++        case MAL_SUSPICIOUS:    return "Suspicious Process";
++        default:                return "Unknown Threat";
++    }
++}
++
++static const char *malware_type_color(malware_type_t t) {
++    switch (t) {
++        case MAL_CRYPTOMINER:   return C_YEL;
++        case MAL_BOTNET_CLIENT: return C_RED;
++        case MAL_C2_SERVER:     return C_RED;
++        case MAL_RAT:           return C_RED;
++        case MAL_BACKDOOR:      return C_RED;
++        case MAL_ROOTKIT:       return C_MAG;
++        case MAL_DDOS_BOT:      return C_RED;
++        case MAL_IRC_BOT:       return C_DRED;
++        case MAL_WEBSHELL:      return C_MAG;
++        case MAL_DROPPER:       return C_DYEL;
++        case MAL_WORM:          return C_RED;
++        case MAL_STEALER:       return C_MAG;
++        case MAL_RANSOMWARE:    return C_RED;
++        case MAL_PROXY:         return C_DYEL;
++        case MAL_SUSPICIOUS:    return C_YEL;
++        default:                return C_WHT;
++    }
++}
+ 
++static const char *severity_label(malware_type_t t) {
++    switch (t) {
++        case MAL_CRYPTOMINER:   return "MEDIUM";
++        case MAL_BOTNET_CLIENT: return "CRITICAL";
++        case MAL_C2_SERVER:     return "CRITICAL";
++        case MAL_RAT:           return "CRITICAL";
++        case MAL_BACKDOOR:      return "HIGH";
++        case MAL_ROOTKIT:       return "CRITICAL";
++        case MAL_DDOS_BOT:      return "HIGH";
++        case MAL_IRC_BOT:       return "HIGH";
++        case MAL_WEBSHELL:      return "HIGH";
++        case MAL_DROPPER:       return "MEDIUM";
++        case MAL_WORM:          return "CRITICAL";
++        case MAL_STEALER:       return "CRITICAL";
++        case MAL_RANSOMWARE:    return "CRITICAL";
++        case MAL_PROXY:         return "MEDIUM";
++        case MAL_SUSPICIOUS:    return "LOW";
++        default:                return "INFO";
++    }
++}
++
++/* ──────────────────────── finding struct ──────────────────────── */
++typedef enum {
++    FIND_PROCESS,
++    FIND_CONNECTION,
++    FIND_LISTENER,
++    FIND_CRON,
++    FIND_FILE
++} finding_category_t;
++
++typedef struct {
++    finding_category_t category;
++    malware_type_t     maltype;
++    pid_t              pid;
++    int                fd_num;
++    char               desc[512];
++    char               detail[1024];
++    char               remote_ip[64];
++    unsigned short     remote_port;
++    char               exe_path[MAX_PATH_LEN];
++    char               file_path[MAX_PATH_LEN];
++    char               cron_path[MAX_PATH_LEN];
++    char               cron_line[MAX_LINE];
++    int                remediated;
++} finding_t;
++
++static finding_t findings[MAX_FINDINGS];
++static int num_findings = 0;
++static pid_t self_pid;
++
++/* ──────────────────────── known ports ──────────────────────── */
+ static const unsigned short known_c2_ports[] = {
+     4444, 5555, 6666, 6667, 6668, 6669, 8080, 31337, 12345, 12346,
+     9999, 13377, 4443, 9001, 9002, 54321, 27017, 11211, 6379, 5556, 5557,
+     8888, 9998, 10000, 10001, 50050, 50051, 53, 443, 80, 8443, 44443,
+-    2323, 3333, 7777, 9997, 1337, 31337, 1234, 4321, 0
++    2323, 3333, 7777, 9997, 1337, 1234, 4321, 0
+ };
+ 
+ static int port_is_suspicious(unsigned short port) {
+@@ -61,107 +180,130 @@ static int port_is_suspicious(unsigned short port) {
+     return 0;
+ }
+ 
+-/* Format kernel hex IP (LE) to "a.b.c.d" */
++/* ──────────────────────── malware classification ──────────────────────── */
++static malware_type_t classify_malware(const char *cmdline, const char *exe) {
++    const char *cmd = cmdline ? cmdline : "";
++    const char *ex  = exe ? exe : "";
++
++    /* cryptominer signatures */
++    if (strstr(cmd, "xmrig") || strstr(cmd, "minerd") || strstr(cmd, "stratum") ||
++        strstr(cmd, "pool.") || strstr(cmd, "mine.") || strstr(cmd, "kdevtmpfsi") ||
++        strstr(cmd, "kinsing") || strstr(cmd, "cryptonight") || strstr(cmd, "monero") ||
++        strstr(cmd, "nanopool") || strstr(cmd, "nicehash") || strstr(cmd, "hashrate") ||
++        strstr(cmd, "rig.") || strstr(cmd, "watchbog") || strstr(cmd, "minergate") ||
++        strstr(ex,  "xmrig") || strstr(ex, "kdevtmpfsi") || strstr(ex, "kinsing"))
++        return MAL_CRYPTOMINER;
++
++    /* IRC bot */
++    if (strstr(cmd, "irc") || strstr(cmd, "6667") || strstr(cmd, "6668") ||
++        strstr(cmd, "6669") || strstr(cmd, "undernet") || strstr(cmd, "efnet") ||
++        strstr(cmd, "dalnet"))
++        return MAL_IRC_BOT;
++
++    /* DDoS bot signatures */
++    if (strstr(cmd, "ddos") || strstr(cmd, "flood") || strstr(cmd, "udpflood") ||
++        strstr(cmd, "synflood") || strstr(cmd, "slowloris") || strstr(cmd, "hulk") ||
++        strstr(cmd, "xerxes") || strstr(cmd, "mirai") || strstr(cmd, "tsunami") ||
++        strstr(cmd, "kaiten") || strstr(cmd, "bashlite") || strstr(cmd, "gafgyt") ||
++        strstr(cmd, "qbot") || strstr(cmd, "hajime"))
++        return MAL_DDOS_BOT;
++
++    /* botnet client */
++    if (strstr(cmd, "botnet") || strstr(cmd, "bot.") || strstr(cmd, "cnc") ||
++        strstr(cmd, "command and control"))
++        return MAL_BOTNET_CLIENT;
++
++    /* RAT / meterpreter / cobalt */
++    if (strstr(cmd, "meterpreter") || strstr(cmd, "cobalt") || strstr(cmd, "metasploit") ||
++        strstr(cmd, "beacon") || strstr(cmd, "reverse_shell") || strstr(cmd, "bind_shell") ||
++        strstr(cmd, "sliver") || strstr(cmd, "empire") || strstr(cmd, "pupy") ||
++        strstr(cmd, "covenant"))
++        return MAL_RAT;
++
++    /* rootkit indicators */
++    if (strstr(cmd, "ld.so.preload") || strstr(cmd, "LD_PRELOAD") ||
++        strstr(cmd, "rootkit") || strstr(cmd, "diamorphine") || strstr(cmd, "reptile") ||
++        strstr(cmd, "jynx"))
++        return MAL_ROOTKIT;
++
++    /* web shell */
++    if (strstr(cmd, "c99.php") || strstr(cmd, "r57.php") || strstr(cmd, "b374k") ||
++        strstr(cmd, "weevely") || strstr(cmd, "webshell") || strstr(cmd, "wso.php") ||
++        strstr(cmd, "china chopper"))
++        return MAL_WEBSHELL;
++
++    /* ransomware */
++    if (strstr(cmd, "ransom") || strstr(cmd, "encrypt") || strstr(cmd, ".locked") ||
++        strstr(cmd, "bitcoin") || strstr(cmd, "wallet") || strstr(cmd, "decrypt_files"))
++        return MAL_RANSOMWARE;
++
++    /* info stealer */
++    if (strstr(cmd, "keylogger") || strstr(cmd, "stealer") || strstr(cmd, "credential") ||
++        strstr(cmd, "mimikatz") || strstr(cmd, "lazagne"))
++        return MAL_STEALER;
++
++    /* dropper / loader */
++    if ((strstr(cmd, "wget") || strstr(cmd, "curl")) &&
++        (strstr(cmd, "/tmp") || strstr(cmd, "/dev/shm") || strstr(cmd, "chmod +x") ||
++         strstr(cmd, "pastebin") || strstr(cmd, "transfer.sh") || strstr(cmd, "ix.io") ||
++         strstr(cmd, "raw.")))
++        return MAL_DROPPER;
++
++    /* proxy */
++    if (strstr(cmd, "proxy") || strstr(cmd, "socks5") || strstr(cmd, "3proxy") ||
++        strstr(cmd, "microsocks") || strstr(cmd, "gost") || strstr(cmd, "frp"))
++        return MAL_PROXY;
++
++    /* generic backdoor (base64 decode + exec, eval) */
++    if ((strstr(cmd, "base64") && (strstr(cmd, "-d") || strstr(cmd, "decode"))) ||
++        strstr(cmd, "eval ") || strstr(cmd, "exec("))
++        return MAL_BACKDOOR;
++
++    /* exe in temp is suspicious */
++    if (strstr(ex, "/tmp/") || strstr(ex, "/dev/shm/") || strstr(ex, "/var/tmp/"))
++        return MAL_SUSPICIOUS;
++
++    return MAL_UNKNOWN;
++}
++
++/* ──────────────────────── utility ──────────────────────── */
+ static void format_ip(unsigned int hex_ip, char *out, size_t out_len) {
+     snprintf(out, out_len, "%u.%u.%u.%u",
+              (hex_ip >> 0) & 0xff, (hex_ip >> 8) & 0xff,
+              (hex_ip >> 16) & 0xff, (hex_ip >> 24) & 0xff);
+ }
+ 
+-/* Dump every possible detail about a process for C2/malware intel */
+-static void dump_process_details(pid_t pid) {
+-    char path[MAX_PATH], buf[MAX_LINE], exe_path[MAX_PATH], cwd_path[MAX_PATH];
+-    FILE *f;
+-    printf("  [PROC] PID=%d\n", (int)pid);
+-    snprintf(path, sizeof(path), "/proc/%d/status", (int)pid);
+-    f = fopen(path, "r");
+-    if (f) {
+-        while (fgets(buf, sizeof(buf), f))
+-            if (strncmp(buf, "Name:", 5) == 0 || strncmp(buf, "PPid:", 5) == 0 ||
+-                strncmp(buf, "Uid:", 4) == 0 || strncmp(buf, "Gid:", 4) == 0 ||
+-                strncmp(buf, "State:", 6) == 0 || strncmp(buf, "VmRSS:", 6) == 0 ||
+-                strncmp(buf, "VmSize:", 7) == 0 || strncmp(buf, "Threads:", 8) == 0 ||
+-                strncmp(buf, "NSpid:", 5) == 0)
+-                printf("  [PROC]   %s", buf);
+-        fclose(f);
+-    }
+-    snprintf(path, sizeof(path), "/proc/%d/cmdline", (int)pid);
+-    f = fopen(path, "r");
+-    if (f) {
++static void read_proc_field(pid_t pid, const char *field, char *out, size_t out_len) {
++    char path[MAX_PATH_LEN], buf[MAX_LINE];
++    out[0] = '\0';
++    snprintf(path, sizeof(path), "/proc/%d/%s", (int)pid, field);
++    if (strcmp(field, "exe") == 0 || strcmp(field, "cwd") == 0) {
++        ssize_t L = readlink(path, out, out_len - 1);
++        if (L > 0) out[L] = '\0';
++        return;
++    }
++    FILE *f = fopen(path, "r");
++    if (!f) return;
++    if (strcmp(field, "cmdline") == 0) {
+         size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+-        fclose(f);
+         buf[n] = '\0';
+         for (size_t i = 0; i < n; i++) if (buf[i] == '\0') buf[i] = ' ';
+-        printf("  [PROC]   cmdline: %.800s%s\n", buf, n > 800 ? "..." : "");
+-    }
+-    snprintf(path, sizeof(path), "/proc/%d/exe", (int)pid);
+-    ssize_t L = readlink(path, exe_path, sizeof(exe_path) - 1);
+-    if (L > 0) { exe_path[L] = '\0'; printf("  [PROC]   exe: %s\n", exe_path); }
+-    snprintf(path, sizeof(path), "/proc/%d/cwd", (int)pid);
+-    L = readlink(path, cwd_path, sizeof(cwd_path) - 1);
+-    if (L > 0) { cwd_path[L] = '\0'; printf("  [PROC]   cwd: %s\n", cwd_path); }
+-    snprintf(path, sizeof(path), "/proc/%d/stat", (int)pid);
+-    f = fopen(path, "r");
+-    if (f) {
+-        if (fgets(buf, sizeof(buf), f)) {
+-            unsigned long long starttime = 0;
+-            char *rp = strrchr(buf, ')');
+-            if (rp && rp[1])
+-                sscanf(rp + 2, " %*c %*d %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %*u %*u %*u %*d %*d %*d %*d %llu", &starttime);
+-            printf("  [PROC]   starttime (jiffies): %llu\n", starttime);
++        snprintf(out, out_len, "%s", buf);
++    } else {
++        while (fgets(buf, sizeof(buf), f)) {
++            size_t existing = strlen(out);
++            if (existing + strlen(buf) + 1 < out_len)
++                strcat(out, buf);
+         }
+-        fclose(f);
+-    }
+-    snprintf(path, sizeof(path), "/proc/%d/fd", (int)pid);
+-    DIR *fd = opendir(path);
+-    if (fd) {
+-        struct dirent *fde;
+-        int sock_count = 0;
+-        while ((fde = readdir(fd)) != NULL) {
+-            if (fde->d_name[0] == '.') continue;
+-            char fdpath[MAX_PATH], link[MAX_PATH];
+-            snprintf(fdpath, sizeof(fdpath), "/proc/%d/fd/%s", (int)pid, fde->d_name);
+-            ssize_t Ll = readlink(fdpath, link, sizeof(link) - 1);
+-            if (Ll > 0) { link[Ll] = '\0'; if (strncmp(link, "socket:[", 8) == 0) sock_count++; }
+-        }
+-        closedir(fd);
+-        printf("  [PROC]   open sockets (fd count): %d\n", sock_count);
+-    }
+-    snprintf(path, sizeof(path), "/proc/%d/environ", (int)pid);
+-    f = fopen(path, "r");
+-    if (f) {
+-        size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+-        fclose(f);
+-        buf[n] = '\0';
+-        if (strstr(buf, "LD_PRELOAD")) printf("  [PROC]   env: LD_PRELOAD present (inject)\n");
+-        if (strstr(buf, "LD_LIBRARY_PATH")) printf("  [PROC]   env: LD_LIBRARY_PATH present\n");
+     }
++    fclose(f);
+ }
+ 
+-static int cmdline_suspicious(const char *cmd) {
+-    static const char *bad[] = {
+-        "xmrig", "minerd", "stratum", "pool.", "mine.", "irc", "botnet", "c2", "beacon",
+-        "pastebin.com/raw", "transfer.sh", "ix.io", "kdevtmpfsi", "kinsing", "watchbog",
+-        "cryptonight", "monero", "nanopool", "nicehash", "hashrate", "rig.",
+-        "reverse_shell", "bind_shell", "meterpreter", "cobalt", "metasploit",
+-        "ddos", "flood", "bot.", "cnc", "command and control", "keylogger",
+-        "ld.so.preload", "/tmp/", "/dev/shm/", "base64 -d", "eval ", NULL
+-    };
+-    for (int i = 0; bad[i]; i++)
+-        if (strstr(cmd, bad[i])) return 1;
+-    return 0;
+-}
+-
+-static int exe_in_temp(const char *exe) {
+-    return strstr(exe, "/tmp/") || strstr(exe, "/dev/shm/") || strstr(exe, "/var/tmp/");
+-}
+-
+-/* Resolve socket inode to pid and fd number. Returns 1 if found and sets *out_pid, *out_fd. */
+-static int get_pid_fd_for_inode(unsigned long inode, int *out_pid, int *out_fd) {
++static int get_pid_for_inode(unsigned long inode, int *out_pid, int *out_fd) {
+     DIR *d = opendir("/proc");
+     if (!d) return 0;
+     struct dirent *e;
+-    char fdpath[MAX_PATH], link[MAX_PATH];
++    char fdpath[MAX_PATH_LEN], link[MAX_PATH_LEN];
+     while ((e = readdir(d)) != NULL) {
+         if (e->d_name[0] < '1' || e->d_name[0] > '9') continue;
+         int pid = atoi(e->d_name);
+@@ -172,7 +314,6 @@ static int get_pid_fd_for_inode(unsigned long inode, int *out_pid, int *out_fd)
+         struct dirent *fde;
+         while ((fde = readdir(fdir)) != NULL) {
+             if (fde->d_name[0] == '.') continue;
+-            int fd_num = atoi(fde->d_name);
+             snprintf(fdpath, sizeof(fdpath), "/proc/%s/fd/%s", e->d_name, fde->d_name);
+             ssize_t L = readlink(fdpath, link, sizeof(link) - 1);
+             if (L <= 0) continue;
+@@ -181,7 +322,7 @@ static int get_pid_fd_for_inode(unsigned long inode, int *out_pid, int *out_fd)
+             unsigned long ino = (unsigned long)atol(link + 8);
+             if (ino == inode) {
+                 *out_pid = pid;
+-                *out_fd = fd_num;
++                *out_fd = atoi(fde->d_name);
+                 closedir(fdir);
+                 closedir(d);
+                 return 1;
+@@ -193,109 +334,119 @@ static int get_pid_fd_for_inode(unsigned long inode, int *out_pid, int *out_fd)
+     return 0;
+ }
+ 
+-/* Write garbage to C2 socket to disrupt protocol / fuck with the C2 server */
+-static void poison_socket(int pid, int fd_num) {
+-    char fdpath[MAX_PATH];
+-    snprintf(fdpath, sizeof(fdpath), "/proc/%d/fd/%d", pid, fd_num);
+-    int fd = open(fdpath, O_WRONLY);
+-    if (fd < 0) return;
+-    static char poison[POISON_SIZE];
+-    memset(poison, 0xff, sizeof(poison));
+-    (void)write(fd, poison, sizeof(poison));
+-    close(fd);
+-    printf("[EXPLOIT/POISON] sent %d bytes garbage to C2 socket pid=%d fd=%d\n", POISON_SIZE, pid, fd_num);
++static int cmdline_suspicious(const char *cmd) {
++    static const char *bad[] = {
++        "xmrig", "minerd", "stratum", "pool.", "mine.", "irc", "botnet", "c2", "beacon",
++        "pastebin.com/raw", "transfer.sh", "ix.io", "kdevtmpfsi", "kinsing", "watchbog",
++        "cryptonight", "monero", "nanopool", "nicehash", "hashrate", "rig.",
++        "reverse_shell", "bind_shell", "meterpreter", "cobalt", "metasploit",
++        "ddos", "flood", "bot.", "cnc", "command and control", "keylogger",
++        "ld.so.preload", "/tmp/", "/dev/shm/", "base64 -d", "eval ",
++        "mirai", "tsunami", "kaiten", "bashlite", "gafgyt", "qbot", "hajime",
++        "sliver", "empire", "pupy", "covenant", "weevely", "b374k",
++        NULL
++    };
++    for (int i = 0; bad[i]; i++)
++        if (strstr(cmd, bad[i])) return 1;
++    return 0;
+ }
+ 
+-/* Block C2 IP so reconnects fail (requires root + iptables) */
+-static void block_c2_ip(const char *ip) {
+-    char cmd[512];
+-    snprintf(cmd, sizeof(cmd), "iptables -I OUTPUT 1 -d %s -j DROP 2>/dev/null", ip);
+-    if (system(cmd) == 0)
+-        printf("[EXPLOIT/BLOCK] iptables DROP outgoing to %s\n", ip);
+-    snprintf(cmd, sizeof(cmd), "iptables -I INPUT 1 -s %s -j DROP 2>/dev/null", ip);
+-    if (system(cmd) == 0)
+-        printf("[EXPLOIT/BLOCK] iptables DROP incoming from %s\n", ip);
++/* ──────────────────────── add finding ──────────────────────── */
++static finding_t *add_finding(void) {
++    if (num_findings >= MAX_FINDINGS) return NULL;
++    finding_t *f = &findings[num_findings++];
++    memset(f, 0, sizeof(*f));
++    return f;
+ }
+ 
+-/*
+- * Real exploit: actively connect to C2 server and send disruptive payloads.
+- * Exploits the C2 by (1) opening multiple connections and (2) sending
+- * protocol-confusing / buffer-stressing data to crash or desync the C2.
+- * This is an outbound attack on the C2 infrastructure, not just local cleanup.
+- */
+-static void exploit_c2_server(const char *ip, unsigned short port) {
+-    struct sockaddr_in sa;
+-    static char payload_buf[C2_EXPLOIT_PAYLOAD_SIZE];
+-    int i, sent_total = 0;
++/* ──────────────────────── display helpers ──────────────────────── */
++static void print_banner(void) {
++    printf("\n");
++    printf(C_GRN "  ╔══════════════════════════════════════════════════════════════════╗\n");
++    printf("  ║                                                                  ║\n");
++    printf("  ║   " C_WHT "██╗   ██╗██████╗ ███████╗    ███████╗ ██████╗ █████╗ ███╗  ██╗" C_GRN " ║\n");
++    printf("  ║   " C_WHT "██║   ██║██╔══██╗██╔════╝    ██╔════╝██╔════╝██╔══██╗████╗ ██║" C_GRN " ║\n");
++    printf("  ║   " C_WHT "██║   ██║██████╔╝███████╗    ███████╗██║     ███████║██╔██╗██║" C_GRN " ║\n");
++    printf("  ║   " C_WHT "╚██╗ ██╔╝██╔═══╝ ╚════██║    ╚════██║██║     ██╔══██║██║╚████║" C_GRN " ║\n");
++    printf("  ║   " C_WHT " ╚████╔╝ ██║     ███████║    ███████║╚██████╗██║  ██║██║ ╚███║" C_GRN " ║\n");
++    printf("  ║   " C_WHT "  ╚═══╝  ╚═╝     ╚══════╝    ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚══╝" C_GRN "║\n");
++    printf("  ║                                                                  ║\n");
++    printf("  ║   " C_CYN "Malware & C2/CNC Scanner + Exploit" C_GRN "           " C_DIM "by 0x5da" C_RST C_GRN "  ║\n");
++    printf("  ║   " C_DIM "https://github.com/0x5da  •  imperiumsolutions.xyz" C_RST C_GRN "         ║\n");
++    printf("  ╚══════════════════════════════════════════════════════════════════╝" C_RST "\n\n");
++}
+ 
+-    memset(&sa, 0, sizeof(sa));
+-    sa.sin_family = AF_INET;
+-    sa.sin_port = htons(port);
+-    if (inet_pton(AF_INET, ip, &sa.sin_addr) != 1)
+-        return;
++static void print_section(const char *title) {
++    printf(C_GRN "\n  ┌─────────────────────────────────────────────────────────────────┐\n");
++    printf("  │  %-63s │\n", title);
++    printf("  └─────────────────────────────────────────────────────────────────┘" C_RST "\n\n");
++}
+ 
+-    for (i = 0; i < C2_EXPLOIT_CONNS; i++) {
+-        int fd = socket(AF_INET, SOCK_STREAM, 0);
+-        if (fd < 0) continue;
++static void print_finding_detail(finding_t *f, int idx) {
++    const char *col = malware_type_color(f->maltype);
++    const char *sev = severity_label(f->maltype);
++    const char *sev_col = C_GRN;
++    if (strcmp(sev, "CRITICAL") == 0) sev_col = C_RED;
++    else if (strcmp(sev, "HIGH") == 0) sev_col = C_MAG;
++    else if (strcmp(sev, "MEDIUM") == 0) sev_col = C_YEL;
+ 
+-        struct timeval tv = { 3, 0 };
+-        setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+-        setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
++    printf("  %s[%d]%s ", C_WHT, idx + 1, C_RST);
++    printf("%s%-20s%s  ", col, malware_type_name(f->maltype), C_RST);
++    printf("[%s%s%s]\n", sev_col, sev, C_RST);
++    printf("      %s%s%s\n", C_DIM, f->desc, C_RST);
+ 
+-        if (connect(fd, (struct sockaddr *)&sa, sizeof(sa)) != 0) {
+-            close(fd);
+-            continue;
+-        }
++    if (f->pid > 0) {
++        char cmdline[1024] = {0}, exe[MAX_PATH_LEN] = {0}, cwd[MAX_PATH_LEN] = {0};
++        char status_info[2048] = {0};
++        read_proc_field(f->pid, "cmdline", cmdline, sizeof(cmdline));
++        read_proc_field(f->pid, "exe", exe, sizeof(exe));
++        read_proc_field(f->pid, "cwd", cwd, sizeof(cwd));
++        read_proc_field(f->pid, "status", status_info, sizeof(status_info));
+ 
+-        /* Payload 1: raw 0xff to corrupt protocol state */
+-        memset(payload_buf, 0xff, sizeof(payload_buf));
+-        sent_total += (int)send(fd, payload_buf, sizeof(payload_buf), MSG_NOSIGNAL);
+-
+-        /* Payload 2: fake HTTP to trigger HTTP parser bugs / resource use */
+-        snprintf(payload_buf, sizeof(payload_buf),
+-                 "GET / HTTP/1.1\r\nHost: %s\r\nX-Exploit: 0x5da\r\nContent-Length: 999999999\r\n\r\n", ip);
+-        sent_total += (int)send(fd, payload_buf, (size_t)strlen(payload_buf), MSG_NOSIGNAL);
+-
+-        /* Payload 3: binary length prefix abuse (common in C2 protocols) */
+-        memset(payload_buf, 0, 8);
+-        *(uint32_t *)payload_buf = 0x7fffffff;
+-        *(uint32_t *)(payload_buf + 4) = 0x7fffffff;
+-        sent_total += (int)send(fd, payload_buf, 8, MSG_NOSIGNAL);
+-
+-        /* Payload 4: partial TLS / SSL handshake junk to confuse TLS C2 */
+-        payload_buf[0] = 0x16;
+-        payload_buf[1] = 0x03;
+-        payload_buf[2] = 0x01;
+-        payload_buf[3] = 0x00;
+-        payload_buf[4] = 0xff;
+-        payload_buf[5] = 0xff;
+-        memset(payload_buf + 6, 0x00, 256);
+-        sent_total += (int)send(fd, payload_buf, 262, MSG_NOSIGNAL);
++        printf("      %sPID%s:     %d\n", C_CYN, C_RST, (int)f->pid);
++        if (exe[0])     printf("      %sExe%s:     %s\n", C_CYN, C_RST, exe);
++        if (cmdline[0]) printf("      %sCmd%s:     %.200s%s\n", C_CYN, C_RST, cmdline, strlen(cmdline) > 200 ? "..." : "");
++        if (cwd[0])     printf("      %sCwd%s:     %s\n", C_CYN, C_RST, cwd);
+ 
+-        close(fd);
++        char *line = status_info;
++        while (*line) {
++            char *nl = strchr(line, '\n');
++            if (nl) *nl = '\0';
++            if (strncmp(line, "Name:", 5) == 0 || strncmp(line, "State:", 6) == 0 ||
++                strncmp(line, "PPid:", 5) == 0 || strncmp(line, "Uid:", 4) == 0 ||
++                strncmp(line, "Threads:", 8) == 0 || strncmp(line, "VmRSS:", 6) == 0)
++                printf("      %s%s%s\n", C_DIM, line, C_RST);
++            if (!nl) break;
++            line = nl + 1;
++        }
+     }
+ 
+-    if (sent_total > 0)
+-        printf("[EXPLOIT/C2-ATTACK] %d connections to %s:%u, %d bytes disruptive payloads\n",
+-               C2_EXPLOIT_CONNS, ip, (unsigned)port, sent_total);
+-}
++    if (f->remote_ip[0])
++        printf("      %sRemote%s:  %s:%u\n", C_RED, C_RST, f->remote_ip, f->remote_port);
+ 
+-/* Kill process and optionally entire process group to take down bot/c2 children */
+-static void kill_pid_and_group(pid_t pid, const char *reason) {
+-    if (pid <= 0 || pid == self_pid) return;
+-    if (!do_remediate) return;
+-    if (do_kill_pg) {
+-        pid_t pgid = getpgid(pid);
+-        if (pgid > 0 && killpg(pgid, SIGKILL) == 0) {
+-            printf("[EXPLOIT/KILL] killed process group %d (%s)\n", (int)pgid, reason);
+-            return;
++    if (f->file_path[0]) {
++        struct stat st;
++        if (lstat(f->file_path, &st) == 0) {
++            char time_buf[64];
++            struct tm *tm = localtime(&st.st_mtime);
++            if (tm) strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", tm);
++            else snprintf(time_buf, sizeof(time_buf), "%lld", (long long)st.st_mtime);
++            printf("      %sFile%s:    %s\n", C_CYN, C_RST, f->file_path);
++            printf("      %sSize%s:    %lld bytes  %sMtime%s: %s  %sMode%s: 0%o\n",
++                   C_CYN, C_RST, (long long)st.st_size,
++                   C_CYN, C_RST, time_buf,
++                   C_CYN, C_RST, (unsigned)(st.st_mode & 07777));
+         }
+     }
+-    if (kill(pid, SIGKILL) == 0)
+-        printf("[EXPLOIT/KILL] killed pid %d (%s)\n", (int)pid, reason);
++
++    if (f->cron_path[0])
++        printf("      %sCron%s:    %s -> %s%s%s\n", C_CYN, C_RST, f->cron_path, C_DRED, f->cron_line, C_RST);
++
++    printf("\n");
+ }
+ 
+-static void scan_and_kill_c2_connections(const char *path) {
++/* ──────────────────────── scanning ──────────────────────── */
++static void scan_connections(const char *path) {
+     FILE *f = fopen(path, "r");
+     if (!f) return;
+     char buf[MAX_LINE];
+@@ -303,35 +454,40 @@ static void scan_and_kill_c2_connections(const char *path) {
+     while (fgets(buf, sizeof(buf), f)) {
+         unsigned int laddr, lport, raddr, rport, state, uid = 0;
+         unsigned long inode = 0;
+-        /* sl local rem st tx_queue rx_queue tr tm retrnsmt uid timeout inode */
+         if (sscanf(buf, " %*d: %8x:%4x %8x:%4x %x %*x:%*x %*x:%*lx %*x %u %*lu %lu",
+                    &laddr, &lport, &raddr, &rport, &state, &uid, &inode) < 7)
+             continue;
+-        if (state != 1) continue; /* ESTABLISHED */
++        if (state != 1) continue;
+         if (raddr == 0 || (raddr & 0xff) == 0x7f) continue;
+         if (!port_is_suspicious((unsigned short)rport)) continue;
+-        char local_ip[32], remote_ip[32];
+-        format_ip(laddr, local_ip, sizeof(local_ip));
+-        format_ip(raddr, remote_ip, sizeof(remote_ip));
+-        printf("[C2/CONN] %s\n", path);
+-        printf("  [CONN] local %s:%u -> remote %s:%u state=ESTABLISHED inode=%lu uid=%u\n",
+-               local_ip, (unsigned)lport, remote_ip, (unsigned)rport, inode, uid);
++
+         int pid = 0, fd_num = 0;
+-        if (inode && get_pid_fd_for_inode(inode, &pid, &fd_num)) {
+-            dump_process_details((pid_t)pid);
+-            if (do_remediate) {
+-                if (do_exploit_c2) exploit_c2_server(remote_ip, (unsigned short)rport);
+-                if (do_poison) poison_socket(pid, fd_num);
+-                if (do_block_ip) block_c2_ip(remote_ip);
+-                kill_pid_and_group((pid_t)pid, "held C2 socket");
+-            }
+-        } else if (inode)
+-            printf("  [CONN] (inode %lu: no process found holding socket)\n", inode);
++        char cmdline[1024] = {0}, exe[MAX_PATH_LEN] = {0};
++        if (inode && get_pid_for_inode(inode, &pid, &fd_num)) {
++            read_proc_field((pid_t)pid, "cmdline", cmdline, sizeof(cmdline));
++            read_proc_field((pid_t)pid, "exe", exe, sizeof(exe));
++        }
++
++        finding_t *fi = add_finding();
++        if (!fi) break;
++        fi->category = FIND_CONNECTION;
++        fi->pid = (pid_t)pid;
++        fi->fd_num = fd_num;
++        fi->remote_port = (unsigned short)rport;
++        fi->maltype = classify_malware(cmdline, exe);
++        if (fi->maltype == MAL_UNKNOWN) fi->maltype = MAL_BOTNET_CLIENT;
++        format_ip(raddr, fi->remote_ip, sizeof(fi->remote_ip));
++        if (exe[0]) strncpy(fi->exe_path, exe, sizeof(fi->exe_path) - 1);
++
++        char local_ip[32];
++        format_ip(laddr, local_ip, sizeof(local_ip));
++        snprintf(fi->desc, sizeof(fi->desc), "ESTABLISHED connection %s:%u -> %s:%u (inode %lu, uid %u)",
++                 local_ip, (unsigned)lport, fi->remote_ip, (unsigned)rport, inode, uid);
+     }
+     fclose(f);
+ }
+ 
+-static void scan_listen_and_report(const char *path) {
++static void scan_listeners(const char *path) {
+     FILE *f = fopen(path, "r");
+     if (!f) return;
+     char buf[MAX_LINE];
+@@ -339,292 +495,615 @@ static void scan_listen_and_report(const char *path) {
+     while (fgets(buf, sizeof(buf), f)) {
+         unsigned int laddr, lport, state;
+         unsigned long inode = 0;
+-        if (sscanf(buf, " %*d: %8x:%4x %*8x:%*4x %x %*x:%*x %*x:%*lx %*x %*u %*lu %lu", &laddr, &lport, &state, &inode) < 4) continue;
+-        if (state != 10) continue; /* LISTEN */
++        if (sscanf(buf, " %*d: %8x:%4x %*8x:%*4x %x %*x:%*x %*x:%*lx %*x %*u %*lu %lu",
++                   &laddr, &lport, &state, &inode) < 4)
++            continue;
++        if (state != 10) continue;
+         if (!port_is_suspicious((unsigned short)lport)) continue;
+-        char local_ip[32];
+-        format_ip(laddr, local_ip, sizeof(local_ip));
+-        printf("[C2/LISTEN] %s bind %s:%u inode=%lu\n", path, local_ip, (unsigned)lport, inode);
++
+         int pid = 0, fd_num = 0;
+-        if (inode && get_pid_fd_for_inode(inode, &pid, &fd_num)) {
+-            dump_process_details((pid_t)pid);
+-            if (do_remediate)
+-                kill_pid_and_group((pid_t)pid, "C2 listener");
++        char cmdline[1024] = {0}, exe[MAX_PATH_LEN] = {0};
++        if (inode && get_pid_for_inode(inode, &pid, &fd_num)) {
++            read_proc_field((pid_t)pid, "cmdline", cmdline, sizeof(cmdline));
++            read_proc_field((pid_t)pid, "exe", exe, sizeof(exe));
+         }
++
++        finding_t *fi = add_finding();
++        if (!fi) break;
++        fi->category = FIND_LISTENER;
++        fi->pid = (pid_t)pid;
++        fi->fd_num = fd_num;
++        fi->maltype = classify_malware(cmdline, exe);
++        if (fi->maltype == MAL_UNKNOWN) fi->maltype = MAL_C2_SERVER;
++
++        char local_ip[32];
++        format_ip(laddr, local_ip, sizeof(local_ip));
++        snprintf(fi->desc, sizeof(fi->desc), "Listening on %s:%u (inode %lu) — possible C2/CNC server",
++                 local_ip, (unsigned)lport, inode);
+     }
+     fclose(f);
+ }
+ 
+-static void kill_suspicious_process(const char *pid_str, const char *reason) {
+-    int pid = atoi(pid_str);
+-    if (pid <= 0 || pid == (int)self_pid) return;
+-    dump_process_details((pid_t)pid);
+-    kill_pid_and_group((pid_t)pid, reason);
+-}
+-
+-static void scan_proc_processes(void) {
++static void scan_processes(void) {
+     DIR *d = opendir("/proc");
+     if (!d) return;
+     struct dirent *e;
+     while ((e = readdir(d)) != NULL) {
+         if (e->d_name[0] < '1' || e->d_name[0] > '9') continue;
+-        char path[MAX_PATH], cmdline[MAX_LINE], exe_path[MAX_PATH];
+-        snprintf(path, sizeof(path), "/proc/%s/cmdline", e->d_name);
+-        FILE *f = fopen(path, "r");
+-        if (!f) continue;
+-        size_t n = fread(cmdline, 1, sizeof(cmdline) - 1, f);
+-        fclose(f);
+-        cmdline[n] = '\0';
+-        for (size_t i = 0; i < n; i++)
+-            if (cmdline[i] == '\0') cmdline[i] = ' ';
+-        snprintf(path, sizeof(path), "/proc/%s/exe", e->d_name);
+-        ssize_t L = readlink(path, exe_path, sizeof(exe_path) - 1);
+-        if (L > 0) {
+-            exe_path[L] = '\0';
+-            if (exe_in_temp(exe_path)) {
+-                printf("[MALWARE/PROC] pid %s exe in temp: %s\n", e->d_name, exe_path);
+-                kill_suspicious_process(e->d_name, "exe in temp");
+-            }
+-        }
+-        if (cmdline_suspicious(cmdline)) {
+-            printf("[MALWARE/CMD] pid %s %.200s%s\n", e->d_name, cmdline, n > 200 ? "..." : "");
+-            kill_suspicious_process(e->d_name, "suspicious cmdline");
+-        }
+-    }
+-    closedir(d);
+-}
++        int pid = atoi(e->d_name);
++        if (pid == (int)self_pid) continue;
+ 
+-/* Rewrite cron file dropping lines that match predicate; return 1 if we removed something */
+-static int strip_bad_cron_lines(const char *path, int (*is_bad)(const char *)) {
+-    FILE *f = fopen(path, "r");
+-    if (!f) return 0;
+-    char **lines = NULL;
+-    size_t cap = 0, n = 0;
+-    char buf[MAX_LINE];
+-    while (fgets(buf, sizeof(buf), f)) {
+-        if (n >= cap) {
+-            cap = cap ? cap * 2 : 64;
+-            char **p = realloc(lines, cap * sizeof(char *));
+-            if (!p) break;
+-            lines = p;
+-        }
+-        lines[n] = strdup(buf);
+-        if (lines[n]) n++;
+-    }
+-    fclose(f);
+-    if (n == 0) return 0;
+-    FILE *out = fopen(path, "w");
+-    if (!out) {
+-        for (size_t i = 0; i < n; i++) free(lines[i]);
+-        free(lines);
+-        return 0;
+-    }
+-    int removed = 0;
+-    for (size_t i = 0; i < n; i++) {
+-        if (!lines[i]) { free(lines[i]); continue; }
+-        if (is_bad(lines[i])) {
+-            fprintf(out, "# 0x5da removed: %s", lines[i]);
+-            removed = 1;
+-        } else
+-            fputs(lines[i], out);
+-        free(lines[i]);
++        char cmdline[MAX_LINE] = {0}, exe[MAX_PATH_LEN] = {0};
++        read_proc_field((pid_t)pid, "cmdline", cmdline, sizeof(cmdline));
++        read_proc_field((pid_t)pid, "exe", exe, sizeof(exe));
++
++        int suspicious = cmdline_suspicious(cmdline);
++        int temp_exe = (strstr(exe, "/tmp/") || strstr(exe, "/dev/shm/") || strstr(exe, "/var/tmp/")) ? 1 : 0;
++
++        if (!suspicious && !temp_exe) continue;
++
++        /* avoid duplicating findings already caught by connection/listener scans */
++        int already = 0;
++        for (int i = 0; i < num_findings; i++)
++            if (findings[i].pid == (pid_t)pid) { already = 1; break; }
++        if (already) continue;
++
++        finding_t *fi = add_finding();
++        if (!fi) break;
++        fi->category = FIND_PROCESS;
++        fi->pid = (pid_t)pid;
++        fi->maltype = classify_malware(cmdline, exe);
++        if (fi->maltype == MAL_UNKNOWN) fi->maltype = MAL_SUSPICIOUS;
++        if (exe[0]) strncpy(fi->exe_path, exe, sizeof(fi->exe_path) - 1);
++        snprintf(fi->desc, sizeof(fi->desc), "Suspicious process: %.300s", cmdline[0] ? cmdline : exe);
+     }
+-    free(lines);
+-    fclose(out);
+-    return removed;
++    closedir(d);
+ }
+ 
+ static int cron_line_bad(const char *line) {
+     if (line[0] == '#' || line[0] == '\n') return 0;
+     if ((strstr(line, "wget") || strstr(line, "curl")) &&
+-        (strstr(line, "http") || strstr(line, "ftp") || strstr(line, "raw.") || strstr(line, "pastebin") || strstr(line, "transfer.sh")))
++        (strstr(line, "http") || strstr(line, "ftp") || strstr(line, "raw.") ||
++         strstr(line, "pastebin") || strstr(line, "transfer.sh")))
+         return 1;
+     if (strstr(line, "chmod +x") && (strstr(line, "/tmp") || strstr(line, " sh ") || strstr(line, "/dev/shm")))
+         return 1;
+-    if ((strstr(line, "/tmp/") || strstr(line, "/dev/shm/")) && (strstr(line, "curl") || strstr(line, "wget") || strstr(line, "python") || strstr(line, "perl")))
++    if ((strstr(line, "/tmp/") || strstr(line, "/dev/shm/")) &&
++        (strstr(line, "curl") || strstr(line, "wget") || strstr(line, "python") || strstr(line, "perl")))
+         return 1;
+     if (strstr(line, "base64") && (strstr(line, "decode") || strstr(line, " -d ")))
+         return 1;
+     return 0;
+ }
+ 
+-static void scan_and_strip_cron_file(const char *path) {
++static void scan_cron_file(const char *path) {
+     FILE *f = fopen(path, "r");
+     if (!f) return;
+     char buf[MAX_LINE];
+-    int found = 0;
+     while (fgets(buf, sizeof(buf), f)) {
+-        if (cron_line_bad(buf)) {
+-            if (!found) printf("[C2/CRON] %s\n", path);
+-            printf("  %s", buf);
+-            found = 1;
+-        }
++        if (!cron_line_bad(buf)) continue;
++        finding_t *fi = add_finding();
++        if (!fi) break;
++        fi->category = FIND_CRON;
++        fi->maltype = MAL_DROPPER;
++        strncpy(fi->cron_path, path, sizeof(fi->cron_path) - 1);
++        strncpy(fi->cron_line, buf, sizeof(fi->cron_line) - 1);
++        char *nl = strchr(fi->cron_line, '\n');
++        if (nl) *nl = '\0';
++        snprintf(fi->desc, sizeof(fi->desc), "Malicious cron entry in %s", path);
+     }
+     fclose(f);
+-    if (found && do_remediate && strip_bad_cron_lines(path, cron_line_bad))
+-        printf("[EXPLOIT/CRON] stripped bad lines from %s\n", path);
+ }
+ 
+-static void scan_cron_dirs(void) {
+-    scan_and_strip_cron_file("/etc/crontab");
+-    DIR *d = opendir("/etc/cron.d");
+-    if (d) {
++static void scan_cron(void) {
++    scan_cron_file("/etc/crontab");
++    const char *dirs[] = { "/etc/cron.d", "/var/spool/cron/crontabs", NULL };
++    for (int i = 0; dirs[i]; i++) {
++        DIR *d = opendir(dirs[i]);
++        if (!d) continue;
+         struct dirent *e;
+         while ((e = readdir(d)) != NULL) {
+             if (e->d_name[0] == '.') continue;
+-            char path[MAX_PATH];
+-            snprintf(path, sizeof(path), "/etc/cron.d/%s", e->d_name);
+-            scan_and_strip_cron_file(path);
++            char path[MAX_PATH_LEN];
++            snprintf(path, sizeof(path), "%s/%s", dirs[i], e->d_name);
++            scan_cron_file(path);
+         }
+         closedir(d);
+     }
+-    d = opendir("/var/spool/cron/crontabs");
+-    if (d) {
++}
++
++static void scan_temp_dirs(void) {
++    const char *dirs[] = { "/tmp", "/dev/shm", "/var/tmp", NULL };
++    time_t now = time(NULL);
++    for (int i = 0; dirs[i]; i++) {
++        DIR *d = opendir(dirs[i]);
++        if (!d) continue;
+         struct dirent *e;
+         while ((e = readdir(d)) != NULL) {
+             if (e->d_name[0] == '.') continue;
+-            char path[MAX_PATH];
+-            snprintf(path, sizeof(path), "/var/spool/cron/crontabs/%s", e->d_name);
+-            scan_and_strip_cron_file(path);
++            char path[MAX_PATH_LEN];
++            snprintf(path, sizeof(path), "%s/%s", dirs[i], e->d_name);
++            struct stat st;
++            if (lstat(path, &st) != 0 || !S_ISREG(st.st_mode)) continue;
++            int exec = (st.st_mode & 0111) ? 1 : 0;
++            int recent = ((now - st.st_mtime) < 86400 * 2) ? 1 : 0;
++            if (!exec && !recent) continue;
++
++            finding_t *fi = add_finding();
++            if (!fi) break;
++            fi->category = FIND_FILE;
++            fi->maltype = exec ? MAL_SUSPICIOUS : MAL_DROPPER;
++            strncpy(fi->file_path, path, sizeof(fi->file_path) - 1);
++            snprintf(fi->desc, sizeof(fi->desc), "%s%s file in %s: %s",
++                     exec ? "Executable" : "", recent ? (exec ? " + recent" : "Recently dropped") : "",
++                     dirs[i], e->d_name);
+         }
+         closedir(d);
+     }
+ }
+ 
+-static void ensure_quarantine(void) {
+-    if (mkdir(QUARANTINE, 0700) == 0)
+-        printf("[EXPLOIT] created quarantine %s\n", QUARANTINE);
++/* ──────────────────────── remediation actions ──────────────────────── */
++static void action_kill_process(finding_t *f) {
++    if (f->pid <= 0 || f->pid == self_pid) {
++        printf("    %s[!] No valid PID to kill%s\n", C_YEL, C_RST);
++        return;
++    }
++    if (kill(f->pid, SIGKILL) == 0)
++        printf("    %s[+] Killed PID %d%s\n", C_GRN, (int)f->pid, C_RST);
++    else
++        printf("    %s[-] Failed to kill PID %d: %s%s\n", C_RED, (int)f->pid, strerror(errno), C_RST);
++    f->remediated = 1;
++}
++
++static void action_kill_group(finding_t *f) {
++    if (f->pid <= 0) return;
++    pid_t pgid = getpgid(f->pid);
++    if (pgid > 0 && killpg(pgid, SIGKILL) == 0)
++        printf("    %s[+] Killed process group %d%s\n", C_GRN, (int)pgid, C_RST);
++    else
++        printf("    %s[-] Failed to kill group: %s%s\n", C_RED, strerror(errno), C_RST);
++    f->remediated = 1;
++}
++
++static void action_poison_socket(finding_t *f) {
++    if (f->pid <= 0 || f->fd_num <= 0) {
++        printf("    %s[!] No socket fd to poison%s\n", C_YEL, C_RST);
++        return;
++    }
++    char fdpath[MAX_PATH_LEN];
++    snprintf(fdpath, sizeof(fdpath), "/proc/%d/fd/%d", (int)f->pid, f->fd_num);
++    int fd = open(fdpath, O_WRONLY);
++    if (fd < 0) {
++        printf("    %s[-] Can't open socket: %s%s\n", C_RED, strerror(errno), C_RST);
++        return;
++    }
++    char poison[POISON_SIZE];
++    memset(poison, 0xff, sizeof(poison));
++    ssize_t w = write(fd, poison, sizeof(poison));
++    close(fd);
++    printf("    %s[+] Poisoned C2 socket (%zd bytes garbage sent)%s\n", C_GRN, w, C_RST);
++}
++
++static void action_block_ip(finding_t *f) {
++    if (!f->remote_ip[0]) {
++        printf("    %s[!] No remote IP to block%s\n", C_YEL, C_RST);
++        return;
++    }
++    char cmd[512];
++    snprintf(cmd, sizeof(cmd), "iptables -I OUTPUT 1 -d %s -j DROP 2>/dev/null", f->remote_ip);
++    system(cmd);
++    snprintf(cmd, sizeof(cmd), "iptables -I INPUT 1 -s %s -j DROP 2>/dev/null", f->remote_ip);
++    system(cmd);
++    printf("    %s[+] Blocked %s (iptables DROP in+out)%s\n", C_GRN, f->remote_ip, C_RST);
++}
++
++static void action_exploit_c2(finding_t *f) {
++    if (!f->remote_ip[0] || f->remote_port == 0) {
++        printf("    %s[!] No C2 target to exploit%s\n", C_YEL, C_RST);
++        return;
++    }
++    struct sockaddr_in sa;
++    memset(&sa, 0, sizeof(sa));
++    sa.sin_family = AF_INET;
++    sa.sin_port = htons(f->remote_port);
++    if (inet_pton(AF_INET, f->remote_ip, &sa.sin_addr) != 1) return;
++
++    static char payload[C2_EXPLOIT_PAYLOAD_SIZE];
++    int conns = 0, sent = 0;
++
++    for (int i = 0; i < C2_EXPLOIT_CONNS; i++) {
++        int fd = socket(AF_INET, SOCK_STREAM, 0);
++        if (fd < 0) continue;
++        struct timeval tv = { 3, 0 };
++        setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
++        if (connect(fd, (struct sockaddr *)&sa, sizeof(sa)) != 0) { close(fd); continue; }
++        conns++;
++
++        memset(payload, 0xff, sizeof(payload));
++        sent += (int)send(fd, payload, sizeof(payload), MSG_NOSIGNAL);
++
++        snprintf(payload, sizeof(payload),
++                 "GET / HTTP/1.1\r\nHost: %s\r\nX-Exploit: 0x5da\r\nContent-Length: 999999999\r\n\r\n",
++                 f->remote_ip);
++        sent += (int)send(fd, payload, strlen(payload), MSG_NOSIGNAL);
++
++        memset(payload, 0, 8);
++        *(uint32_t *)payload = 0x7fffffff;
++        *(uint32_t *)(payload + 4) = 0x7fffffff;
++        sent += (int)send(fd, payload, 8, MSG_NOSIGNAL);
++
++        payload[0] = 0x16; payload[1] = 0x03; payload[2] = 0x01;
++        payload[3] = 0x00; payload[4] = 0xff; payload[5] = 0xff;
++        memset(payload + 6, 0x00, 256);
++        sent += (int)send(fd, payload, 262, MSG_NOSIGNAL);
++
++        close(fd);
++    }
++    printf("    %s[+] Attacked C2 %s:%u (%d conns, %d bytes disruptive payload)%s\n",
++           C_GRN, f->remote_ip, f->remote_port, conns, sent, C_RST);
+ }
+ 
+-static void quarantine_file(const char *path) {
+-    const char *base = strrchr(path, '/');
+-    base = base ? base + 1 : path;
+-    char dest[MAX_PATH];
++static void action_quarantine_file(finding_t *f) {
++    if (!f->file_path[0]) {
++        printf("    %s[!] No file to quarantine%s\n", C_YEL, C_RST);
++        return;
++    }
++    mkdir(QUARANTINE, 0700);
++    const char *base = strrchr(f->file_path, '/');
++    base = base ? base + 1 : f->file_path;
++    char dest[MAX_PATH_LEN];
+     snprintf(dest, sizeof(dest), "%s/%s.%lu", QUARANTINE, base, (unsigned long)time(NULL));
+-    if (rename(path, dest) == 0)
+-        printf("[EXPLOIT/QUARANTINE] %s -> %s\n", path, dest);
+-    else if (errno == EXDEV) {
+-        /* cross-device: copy then unlink */
++    if (rename(f->file_path, dest) == 0) {
++        printf("    %s[+] Quarantined: %s -> %s%s\n", C_GRN, f->file_path, dest, C_RST);
++    } else {
+         char buf[8192];
+-        int r = open(path, O_RDONLY);
++        int r = open(f->file_path, O_RDONLY);
+         if (r >= 0) {
+             int w = open(dest, O_WRONLY | O_CREAT | O_TRUNC, 0700);
+             if (w >= 0) {
+                 ssize_t n;
+-                while ((n = read(r, buf, sizeof(buf))) > 0) {
+-                    ssize_t off = 0;
+-                    while (off < n) {
+-                        ssize_t ww = write(w, buf + off, (size_t)(n - off));
+-                        if (ww <= 0) break;
+-                        off += ww;
+-                    }
+-                }
++                while ((n = read(r, buf, sizeof(buf))) > 0) write(w, buf, (size_t)n);
+                 close(w);
+-                unlink(path);
+-                printf("[EXPLOIT/QUARANTINE] %s -> %s (copy)\n", path, dest);
++                unlink(f->file_path);
++                printf("    %s[+] Quarantined (copy): %s -> %s%s\n", C_GRN, f->file_path, dest, C_RST);
+             }
+             close(r);
++        } else {
++            printf("    %s[-] Failed to quarantine: %s%s\n", C_RED, strerror(errno), C_RST);
+         }
+     }
++    f->remediated = 1;
+ }
+ 
+-static void scan_and_quarantine_dir(const char *dirpath) {
+-    DIR *d = opendir(dirpath);
+-    if (!d) return;
+-    struct dirent *e;
+-    time_t now = time(NULL);
+-    char time_buf[64];
+-    while ((e = readdir(d)) != NULL) {
+-        if (e->d_name[0] == '.') continue;
+-        char path[MAX_PATH];
+-        snprintf(path, sizeof(path), "%s/%s", dirpath, e->d_name);
+-        struct stat st;
+-        if (lstat(path, &st) != 0) continue;
+-        if (!S_ISREG(st.st_mode)) continue;
+-        int flag = 0;
+-        struct tm *tm = localtime(&st.st_mtime);
+-        if (tm) strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", tm);
+-        else snprintf(time_buf, sizeof(time_buf), "%lld", (long long)st.st_mtime);
+-        if (st.st_mode & 0111) {
+-            printf("[MALWARE/EXEC] %s\n", path);
+-            printf("  [FILE] size=%lld mtime=%s inode=%lu mode=0%o uid=%u gid=%u\n",
+-                   (long long)st.st_size, time_buf, (unsigned long)st.st_ino, (unsigned)(st.st_mode & 07777), (unsigned)st.st_uid, (unsigned)st.st_gid);
+-            flag = 1;
+-        }
+-        if ((now - st.st_mtime) < 86400 * 2 && (strstr(dirpath, "/tmp") || strstr(dirpath, "shm"))) {
+-            printf("[MALWARE/RECENT] %s\n", path);
+-            printf("  [FILE] size=%lld mtime=%s inode=%lu\n", (long long)st.st_size, time_buf, (unsigned long)st.st_ino);
+-            flag = 1;
+-        }
+-        if (flag && do_remediate) {
+-            ensure_quarantine();
+-            quarantine_file(path);
++static void action_strip_cron(finding_t *f) {
++    if (!f->cron_path[0]) return;
++    FILE *fp = fopen(f->cron_path, "r");
++    if (!fp) { printf("    %s[-] Can't read %s%s\n", C_RED, f->cron_path, C_RST); return; }
++    char **lines = NULL;
++    size_t cap = 0, n = 0;
++    char buf[MAX_LINE];
++    while (fgets(buf, sizeof(buf), fp)) {
++        if (n >= cap) { cap = cap ? cap * 2 : 64; lines = realloc(lines, cap * sizeof(char *)); }
++        lines[n++] = strdup(buf);
++    }
++    fclose(fp);
++    fp = fopen(f->cron_path, "w");
++    if (!fp) { for (size_t i = 0; i < n; i++) free(lines[i]); free(lines); return; }
++    for (size_t i = 0; i < n; i++) {
++        if (cron_line_bad(lines[i]))
++            fprintf(fp, "# 0x5da removed: %s", lines[i]);
++        else
++            fputs(lines[i], fp);
++        free(lines[i]);
++    }
++    free(lines);
++    fclose(fp);
++    printf("    %s[+] Stripped malicious line from %s%s\n", C_GRN, f->cron_path, C_RST);
++    f->remediated = 1;
++}
++
++/* ──────────────────────── interactive menu ──────────────────────── */
++static void show_finding_actions(finding_t *f, int idx) {
++    printf(C_CYN "  ┌── Actions for finding #%d ──────────────────────────────────────┐\n" C_RST, idx + 1);
++    printf("  │                                                                 │\n");
++
++    int opt = 1;
++    if (f->pid > 0) {
++        printf("  │  %s[%d]%s Kill process (PID %d)                                    │\n",
++               C_WHT, opt++, C_RST, (int)f->pid);
++        printf("  │  %s[%d]%s Kill entire process group                                 │\n",
++               C_WHT, opt++, C_RST);
++    }
++    if (f->category == FIND_CONNECTION && f->fd_num > 0)
++        printf("  │  %s[%d]%s Poison C2 socket (send garbage data)                      │\n",
++               C_WHT, opt++, C_RST);
++    if (f->remote_ip[0])
++        printf("  │  %s[%d]%s Block C2 IP via iptables (%s)                  │\n",
++               C_WHT, opt++, C_RST, f->remote_ip);
++    if (f->remote_ip[0] && f->remote_port > 0)
++        printf("  │  %s[%d]%s Exploit C2 server (send disruptive payloads)              │\n",
++               C_WHT, opt++, C_RST);
++    if (f->file_path[0])
++        printf("  │  %s[%d]%s Quarantine file                                           │\n",
++               C_WHT, opt++, C_RST);
++    if (f->cron_path[0])
++        printf("  │  %s[%d]%s Strip malicious cron entry                                │\n",
++               C_WHT, opt++, C_RST);
++
++    printf("  │  %s[A]%s ALL — do everything above                                 │\n", C_RED, C_RST);
++    printf("  │  %s[S]%s Skip this finding                                          │\n", C_DIM, C_RST);
++    printf("  │                                                                 │\n");
++    printf(C_CYN "  └─────────────────────────────────────────────────────────────────┘\n" C_RST);
++}
++
++static void handle_finding_action(finding_t *f, int idx) {
++    show_finding_actions(f, idx);
++    printf("\n  %s>>%s Choice: ", C_GRN, C_RST);
++    fflush(stdout);
++
++    char input[64];
++    if (!fgets(input, sizeof(input), stdin)) return;
++    char ch = toupper(input[0]);
++
++    if (ch == 'S') {
++        printf("    %s[~] Skipped%s\n\n", C_DIM, C_RST);
++        return;
++    }
++
++    if (ch == 'A') {
++        if (f->category == FIND_CONNECTION && f->fd_num > 0)
++            action_poison_socket(f);
++        if (f->remote_ip[0] && f->remote_port > 0)
++            action_exploit_c2(f);
++        if (f->remote_ip[0])
++            action_block_ip(f);
++        if (f->pid > 0)
++            action_kill_group(f);
++        if (f->file_path[0])
++            action_quarantine_file(f);
++        if (f->cron_path[0])
++            action_strip_cron(f);
++        printf("\n");
++        return;
++    }
++
++    int choice = atoi(input);
++    int opt = 1;
++
++    if (f->pid > 0) {
++        if (choice == opt) { action_kill_process(f); printf("\n"); return; } opt++;
++        if (choice == opt) { action_kill_group(f); printf("\n"); return; } opt++;
++    }
++    if (f->category == FIND_CONNECTION && f->fd_num > 0) {
++        if (choice == opt) { action_poison_socket(f); printf("\n"); return; } opt++;
++    }
++    if (f->remote_ip[0]) {
++        if (choice == opt) { action_block_ip(f); printf("\n"); return; } opt++;
++    }
++    if (f->remote_ip[0] && f->remote_port > 0) {
++        if (choice == opt) { action_exploit_c2(f); printf("\n"); return; } opt++;
++    }
++    if (f->file_path[0]) {
++        if (choice == opt) { action_quarantine_file(f); printf("\n"); return; } opt++;
++    }
++    if (f->cron_path[0]) {
++        if (choice == opt) { action_strip_cron(f); printf("\n"); return; } opt++;
++    }
++
++    printf("    %s[?] Invalid choice%s\n\n", C_YEL, C_RST);
++}
++
++static void show_global_menu(void) {
++    printf(C_GRN "\n  ╔══════════════════════════════════════════════════════════════════╗\n");
++    printf("  ║                     REMEDIATION OPTIONS                          ║\n");
++    printf("  ╠══════════════════════════════════════════════════════════════════╣\n");
++    printf("  ║                                                                  ║\n");
++    printf("  ║  " C_WHT "[1]" C_GRN " Review & act on each finding individually                   ║\n");
++    printf("  ║  " C_WHT "[2]" C_GRN " AUTO: Kill all malicious processes                          ║\n");
++    printf("  ║  " C_WHT "[3]" C_GRN " AUTO: Kill all + block all C2 IPs                           ║\n");
++    printf("  ║  " C_WHT "[4]" C_GRN " AUTO: Kill all + block IPs + quarantine files                ║\n");
++    printf("  ║  " C_WHT "[5]" C_GRN " AUTO: Kill all + block IPs + quarantine + strip cron         ║\n");
++    printf("  ║  " C_RED "[6]" C_GRN " FULL AGGRESSION: everything above + exploit C2 + poison      ║\n");
++    printf("  ║  " C_DIM "[0]" C_GRN " Exit without taking action                                   ║\n");
++    printf("  ║                                                                  ║\n");
++    printf("  ╚══════════════════════════════════════════════════════════════════╝" C_RST "\n\n");
++}
++
++static void auto_remediate(int kill, int block, int quarantine, int cron, int exploit, int poison) {
++    for (int i = 0; i < num_findings; i++) {
++        finding_t *f = &findings[i];
++        printf("  %s[%d/%d]%s %s%s%s\n", C_WHT, i + 1, num_findings, C_RST,
++               malware_type_color(f->maltype), malware_type_name(f->maltype), C_RST);
++
++        if (poison && f->category == FIND_CONNECTION && f->fd_num > 0)
++            action_poison_socket(f);
++        if (exploit && f->remote_ip[0] && f->remote_port > 0)
++            action_exploit_c2(f);
++        if (block && f->remote_ip[0])
++            action_block_ip(f);
++        if (kill && f->pid > 0)
++            action_kill_group(f);
++        if (quarantine && f->file_path[0])
++            action_quarantine_file(f);
++        if (cron && f->cron_path[0])
++            action_strip_cron(f);
++    }
++}
++
++/* ──────────────────────── non-interactive (CLI flags) ──────────────────────── */
++static void auto_all(int r, int exploit, int poison, int block, int killgrp) {
++    for (int i = 0; i < num_findings; i++) {
++        finding_t *f = &findings[i];
++        if (poison && f->category == FIND_CONNECTION && f->fd_num > 0)
++            action_poison_socket(f);
++        if (exploit && f->remote_ip[0] && f->remote_port > 0)
++            action_exploit_c2(f);
++        if (block && f->remote_ip[0])
++            action_block_ip(f);
++        if (r && f->pid > 0) {
++            if (killgrp) action_kill_group(f);
++            else action_kill_process(f);
+         }
++        if (r && f->file_path[0])
++            action_quarantine_file(f);
++        if (r && f->cron_path[0])
++            action_strip_cron(f);
+     }
+-    closedir(d);
+ }
+ 
++/* ──────────────────────── usage ──────────────────────── */
+ static void usage(const char *prog) {
+-    printf("Usage: %s [-r] [-E] [-P] [-B] [-G]\n", prog);
+-    printf("  -r, --remediate   kill procs, drop C2, strip cron, quarantine files\n");
+-    printf("  -E, --exploit-c2  (with -r) REAL EXPLOIT: connect to C2 and send disruptive payloads\n");
+-    printf("  -P, --poison     (with -r) write garbage to C2 socket before killing\n");
+-    printf("  -B, --block      (with -r) iptables DROP C2 IP (out + in)\n");
+-    printf("  -G, --kill-group (with -r) kill process group, not just PID\n");
+-    printf("Scan only: full intel. With -r: remediate. With -E: active C2 server exploit.\n");
+-    printf("Created by 0x5da | https://www.imperiumsolutions.xyz/ | https://github.com/0x5da\n");
++    printf("Usage: %s [options]\n\n", prog);
++    printf("  (no flags)        Scan + interactive menu\n");
++    printf("  -r, --remediate   Auto-remediate (kill, strip cron, quarantine)\n");
++    printf("  -E, --exploit-c2  (with -r) active C2 server exploit\n");
++    printf("  -P, --poison      (with -r) poison C2 sockets\n");
++    printf("  -B, --block       (with -r) iptables DROP C2 IPs\n");
++    printf("  -G, --kill-group  (with -r) kill process group\n");
++    printf("  -q, --quiet       No interactive menu (scan + auto actions)\n");
++    printf("  -h, --help        Show this help\n\n");
++    printf("Created by 0x5da | https://github.com/0x5da | https://www.imperiumsolutions.xyz/\n");
+ }
+ 
++/* ──────────────────────── main ──────────────────────── */
+ int main(int argc, char **argv) {
+-    do_remediate = do_poison = do_block_ip = do_kill_pg = do_exploit_c2 = 0;
++    int do_remediate = 0, do_exploit = 0, do_poison = 0, do_block = 0, do_killgrp = 0, quiet = 0;
+     self_pid = getpid();
++
+     for (int i = 1; i < argc; i++) {
+-        if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--remediate") == 0)
+-            do_remediate = 1;
+-        else if (strcmp(argv[i], "-E") == 0 || strcmp(argv[i], "--exploit-c2") == 0)
+-            do_exploit_c2 = 1;
+-        else if (strcmp(argv[i], "-P") == 0 || strcmp(argv[i], "--poison") == 0)
+-            do_poison = 1;
+-        else if (strcmp(argv[i], "-B") == 0 || strcmp(argv[i], "--block") == 0)
+-            do_block_ip = 1;
+-        else if (strcmp(argv[i], "-G") == 0 || strcmp(argv[i], "--kill-group") == 0)
+-            do_kill_pg = 1;
+-        else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+-            usage(argv[0]);
+-            return 0;
+-        }
++        if (!strcmp(argv[i], "-r") || !strcmp(argv[i], "--remediate")) do_remediate = 1;
++        else if (!strcmp(argv[i], "-E") || !strcmp(argv[i], "--exploit-c2")) do_exploit = 1;
++        else if (!strcmp(argv[i], "-P") || !strcmp(argv[i], "--poison")) do_poison = 1;
++        else if (!strcmp(argv[i], "-B") || !strcmp(argv[i], "--block")) do_block = 1;
++        else if (!strcmp(argv[i], "-G") || !strcmp(argv[i], "--kill-group")) do_killgrp = 1;
++        else if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) quiet = 1;
++        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) { usage(argv[0]); return 0; }
++    }
++    if (do_exploit || do_poison || do_block || do_killgrp) do_remediate = 1;
++
++    print_banner();
++
++    /* ──── PHASE 1: SCAN ──── */
++    print_section("PHASE 1: SCANNING VPS FOR THREATS");
++
++    printf("  %s[*]%s Scanning TCP connections (outbound C2)...\n", C_CYN, C_RST);
++    scan_connections("/proc/net/tcp");
++    scan_connections("/proc/net/tcp6");
++
++    printf("  %s[*]%s Scanning listening ports (C2/CNC servers)...\n", C_CYN, C_RST);
++    scan_listeners("/proc/net/tcp");
++    scan_listeners("/proc/net/tcp6");
++
++    printf("  %s[*]%s Scanning processes for malware signatures...\n", C_CYN, C_RST);
++    scan_processes();
++
++    printf("  %s[*]%s Scanning cron for persistence mechanisms...\n", C_CYN, C_RST);
++    scan_cron();
++
++    printf("  %s[*]%s Scanning /tmp, /dev/shm, /var/tmp for dropped files...\n", C_CYN, C_RST);
++    scan_temp_dirs();
++
++    printf("  %s[*]%s Scan complete.\n\n", C_GRN, C_RST);
++
++    /* ──── PHASE 2: RESULTS ──── */
++    if (num_findings == 0) {
++        print_section("RESULTS: VPS CLEAN");
++        printf("  %s[+] No malware, C2 connections, or suspicious activity detected.%s\n", C_GRN, C_RST);
++        printf("  %s    VPS appears clean. Run again periodically to monitor.%s\n\n", C_DIM, C_RST);
++        return 0;
++    }
++
++    print_section("PHASE 2: THREAT ANALYSIS");
++
++    /* summary counts */
++    int counts[16] = {0};
++    int cat_counts[5] = {0};
++    for (int i = 0; i < num_findings; i++) {
++        counts[findings[i].maltype]++;
++        cat_counts[findings[i].category]++;
++    }
++
++    printf("  %s╔════════════════════════════════════════════════╗%s\n", C_RED, C_RST);
++    printf("  %s║  ⚠  %d THREAT(S) DETECTED ON THIS VPS         ║%s\n", C_RED, num_findings, C_RST);
++    printf("  %s╚════════════════════════════════════════════════╝%s\n\n", C_RED, C_RST);
++
++    printf("  %sby category:%s\n", C_DIM, C_RST);
++    if (cat_counts[FIND_CONNECTION]) printf("    %s●%s C2/CNC Connections:    %d\n", C_RED, C_RST, cat_counts[FIND_CONNECTION]);
++    if (cat_counts[FIND_LISTENER])   printf("    %s●%s C2 Listeners:          %d\n", C_RED, C_RST, cat_counts[FIND_LISTENER]);
++    if (cat_counts[FIND_PROCESS])    printf("    %s●%s Malicious Processes:   %d\n", C_YEL, C_RST, cat_counts[FIND_PROCESS]);
++    if (cat_counts[FIND_CRON])       printf("    %s●%s Cron Persistence:      %d\n", C_MAG, C_RST, cat_counts[FIND_CRON]);
++    if (cat_counts[FIND_FILE])       printf("    %s●%s Suspicious Files:      %d\n", C_DYEL, C_RST, cat_counts[FIND_FILE]);
++
++    printf("\n  %sby malware type:%s\n", C_DIM, C_RST);
++    for (int t = 1; t < 16; t++) {
++        if (counts[t] > 0)
++            printf("    %s●%s %-22s %d\n", malware_type_color((malware_type_t)t), C_RST,
++                   malware_type_name((malware_type_t)t), counts[t]);
++    }
++    if (counts[0] > 0)
++        printf("    %s●%s %-22s %d\n", C_DIM, C_RST, "Unknown", counts[0]);
++
++    /* ──── PHASE 3: DETAILED FINDINGS ──── */
++    print_section("PHASE 3: DETAILED FINDINGS");
++
++    for (int i = 0; i < num_findings; i++)
++        print_finding_detail(&findings[i], i);
++
++    /* ──── PHASE 4: REMEDIATION ──── */
++    if (do_remediate && quiet) {
++        print_section("PHASE 4: AUTO-REMEDIATION");
++        auto_all(do_remediate, do_exploit, do_poison, do_block, do_killgrp);
++        printf("\n  %s[+] Auto-remediation complete.%s\n\n", C_GRN, C_RST);
++        return 0;
+     }
+-    if (do_poison || do_block_ip || do_kill_pg || do_exploit_c2) do_remediate = 1;
+ 
+-    printf("--- 0x5da VPS Malware/C2 Scanner ---\n");
+-    printf("Created by 0x5da (Toasty / OsintToast / WoahToast)\n");
+-    printf("Exploit Developer & Security Engineer | OSINT | Malware Analysis | Pentesting Tools\n");
+-    printf("https://www.imperiumsolutions.xyz/ | https://github.com/0x5da\n");
+     if (do_remediate) {
+-        printf("MODE: REMEDIATE (kill procs, drop C2, strip cron, quarantine)\n");
+-        if (do_exploit_c2) printf("  + EXPLOIT: active C2 server attack (connect + disruptive payloads)\n");
+-        if (do_poison) printf("  + POISON C2 sockets before kill\n");
+-        if (do_block_ip) printf("  + BLOCK C2 IPs via iptables\n");
+-        if (do_kill_pg) printf("  + KILL process group\n");
+-    } else
+-        printf("MODE: SCAN ONLY (full intel; use -r to remediate, -E for C2 exploit)\n");
+-    printf("\n");
++        print_section("PHASE 4: AUTO-REMEDIATION");
++        auto_all(do_remediate, do_exploit, do_poison, do_block, do_killgrp);
++        printf("\n  %s[+] Remediation complete.%s\n\n", C_GRN, C_RST);
++        return 0;
++    }
++
++    /* interactive mode */
++    print_section("PHASE 4: WHAT DO YOU WANT TO DO?");
++    show_global_menu();
++    printf("  %s>>%s Choice: ", C_GRN, C_RST);
++    fflush(stdout);
++
++    char input[64];
++    if (!fgets(input, sizeof(input), stdin)) return 0;
++    int choice = atoi(input);
++
++    switch (choice) {
++        case 0:
++            printf("\n  %s[~] Exiting without action. Stay safe.%s\n\n", C_DIM, C_RST);
++            break;
++        case 1:
++            printf("\n");
++            for (int i = 0; i < num_findings; i++) {
++                print_finding_detail(&findings[i], i);
++                handle_finding_action(&findings[i], i);
++            }
++            break;
++        case 2:
++            auto_remediate(1, 0, 0, 0, 0, 0);
++            break;
++        case 3:
++            auto_remediate(1, 1, 0, 0, 0, 0);
++            break;
++        case 4:
++            auto_remediate(1, 1, 1, 0, 0, 0);
++            break;
++        case 5:
++            auto_remediate(1, 1, 1, 1, 0, 0);
++            break;
++        case 6:
++            auto_remediate(1, 1, 1, 1, 1, 1);
++            break;
++        default:
++            printf("  %s[?] Invalid option%s\n", C_YEL, C_RST);
++    }
+ 
+-    printf("[*] C2 connections (TCP) ...\n");
+-    scan_and_kill_c2_connections("/proc/net/tcp");
+-    printf("[*] C2 connections (TCP6) ...\n");
+-    scan_and_kill_c2_connections("/proc/net/tcp6");
+-    printf("[*] Listening ports ...\n");
+-    scan_listen_and_report("/proc/net/tcp");
+-    printf("[*] Processes ...\n");
+-    scan_proc_processes();
+-    printf("[*] Cron persistence ...\n");
+-    scan_cron_dirs();
+-    printf("[*] Temp / shm / var-tmp ...\n");
+-    scan_and_quarantine_dir("/tmp");
+-    scan_and_quarantine_dir("/dev/shm");
+-    scan_and_quarantine_dir("/var/tmp");
+-
+-    printf("\n--- scan complete ---\n");
++    printf("\n  %s── 0x5da scanner complete ──%s\n\n", C_GRN, C_RST);
+     return 0;
+ }
+diff --git a/vulnerable_target b/vulnerable_target
+new file mode 100755
+index 0000000000000000000000000000000000000000..184a84bc0fcbf710d2a8957de863bbcb0970acfb
+GIT binary patch
+literal 16496
+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
+Gsp4O35|btX
+
+literal 0
+HcmV?d00001
+
+-- 
+2.43.0
+
