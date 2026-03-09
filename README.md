@@ -18,7 +18,7 @@ $ whoami
 ├─ Passionate about Cybersecurity & Penetration Testing
 ├─ Building tools for security research & educational purposes
 ├─ Always learning, always improving
-└─ Based in Asia/Dhaka timezone
+└─ Based in London/United Kingdom timezone
 ```
 
 ---
