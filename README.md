@@ -14,11 +14,11 @@
 
 ```
 $ whoami
-┌─ Security Engineer & Exploit Developer
-├─ Passionate about Cybersecurity & Penetration Testing
-├─ Building tools for security research & educational purposes
-├─ Always learning, always improving
-└─ Based in London/United Kingdom timezone
+┌─ Security Engineer & Exploit Developer.
+├─ Passionate about Cybersecurity & Penetration Testing.
+├─ Building tools for security research & educational purposes.
+├─ Always learning, always improving.
+└─ Based in London/United Kingdom timezone.
 ```
 
 ---
